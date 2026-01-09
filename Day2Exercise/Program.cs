@@ -178,6 +178,7 @@ namespace Day2Exercise
 
 
             int safeMaximumCapacity = maxCapacity;
+            Console.WriteLine(itemCount);
 
             /*
                 Explanation:
