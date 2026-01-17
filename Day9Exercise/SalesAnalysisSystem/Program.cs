@@ -26,7 +26,8 @@
                     salesCategory[i] = "Low";
                 }
 
-                else if (todaysSale >= 5000 && todaysSale <= 15000) {
+                else if (todaysSale >= 5000 && todaysSale <= 15000)
+                {
                     salesCategory[i] = "Medium";
                 }
 
