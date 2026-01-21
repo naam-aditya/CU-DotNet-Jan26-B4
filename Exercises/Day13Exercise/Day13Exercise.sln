@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GymMembership", "GymMembership\GymMembership.csproj", "{C1431115-9950-4CD8-9991-E35626BB4A2D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LineMethod", "LineMethod\LineMethod.csproj", "{C0BAFD21-6F11-4634-9E8B-F25F0B3BB559}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C1431115-9950-4CD8-9991-E35626BB4A2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C1431115-9950-4CD8-9991-E35626BB4A2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C1431115-9950-4CD8-9991-E35626BB4A2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C1431115-9950-4CD8-9991-E35626BB4A2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C0BAFD21-6F11-4634-9E8B-F25F0B3BB559}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C0BAFD21-6F11-4634-9E8B-F25F0B3BB559}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C0BAFD21-6F11-4634-9E8B-F25F0B3BB559}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C0BAFD21-6F11-4634-9E8B-F25F0B3BB559}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
