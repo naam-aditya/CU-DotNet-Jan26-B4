@@ -5,7 +5,7 @@
         static void Main(string[] args)
         {
             Height person1 = new(5, 6.5m);
-            Height person2 = new(5, 7.5m);
+            Height person2 = new(67.5m);
 
             Console.WriteLine(person1.ToString()); 
             Console.WriteLine(person2.ToString()); 
@@ -22,6 +22,12 @@
         {
             Feet = 0;
             Inches = 0;
+        }
+
+        public Height(decimal inches)
+        {
+            Feet = (int) inches / 12;
+            Inches = inches % 12;
         }
 
         public Height(int feet, decimal inches)
