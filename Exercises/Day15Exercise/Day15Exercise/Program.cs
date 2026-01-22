@@ -7,6 +7,8 @@
             Height person1 = new(5, 6.5m);
             Height person2 = new(5, 7.5m);
 
+            Console.WriteLine(person1.ToString()); 
+            Console.WriteLine(person2.ToString()); 
             Console.WriteLine(person1.AddHeights(person2).ToString());
         }
     }
