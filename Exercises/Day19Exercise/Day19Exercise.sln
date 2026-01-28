@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UtilityBillingSystem", "UtilityBillingSystem\UtilityBillingSystem.csproj", "{4FFE5AB2-EADB-43A3-BEBE-F063ACF01FF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VehicleSimulation", "VehicleSimulation\VehicleSimulation.csproj", "{AC7D4443-3934-4D4B-A581-5B455F791CD4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4FFE5AB2-EADB-43A3-BEBE-F063ACF01FF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4FFE5AB2-EADB-43A3-BEBE-F063ACF01FF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4FFE5AB2-EADB-43A3-BEBE-F063ACF01FF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4FFE5AB2-EADB-43A3-BEBE-F063ACF01FF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC7D4443-3934-4D4B-A581-5B455F791CD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC7D4443-3934-4D4B-A581-5B455F791CD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC7D4443-3934-4D4B-A581-5B455F791CD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC7D4443-3934-4D4B-A581-5B455F791CD4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
