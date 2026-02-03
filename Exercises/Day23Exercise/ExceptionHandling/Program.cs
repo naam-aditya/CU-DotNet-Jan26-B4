@@ -7,8 +7,7 @@
             DivideNums(3, 0);
             ConvertToInt("p");
             GetElement([3, 5, 6], 5);
-            GetStudentAge();
-            GetStudentName();
+            ValidateStudentData();
         }
 
         static int DivideNums(int x, int y)
@@ -80,7 +79,11 @@
                 }
                 catch (InvalidStudentAgeException ex)
                 {
-                    Console.WriteLine($"Custom Error: {ex.Message}\n");
+                    Exception wrappedException = new("Student AgeValidation Failed!", ex);
+                    Console.WriteLine($"Exception: {wrappedException.Message}\n");
+                    Console.WriteLine($"Custom Error: {wrappedException.InnerException!.Message}\n");
+
+                    throw wrappedException;
                 }
                 catch (FormatException)
                 {
@@ -102,8 +105,13 @@
                     studentName = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(studentName) || studentName.Length < 3)
-                        throw new InvalidStudentNameException("Student name must be at least 3 characters and not empty.");
+                        throw new InvalidStudentNameException("Invalid Name: Student name must be at least 3 characters and not empty.");
 
+
+                    foreach (var ch in studentName)
+                        if (!char.IsLetter(ch))
+                            throw new InvalidStudentNameException("Invalid Name: Name must contain letters only");
+                    
                     Console.WriteLine("Student Name is valid.\n");
                     break;
                 }
@@ -114,6 +122,37 @@
             }
 
             return studentName;
+        }
+
+        static void ValidateStudentData()
+        {
+            Console.WriteLine("\n--- Student Validation (Custom Exceptions) ---");
+
+            try
+            {
+                string name = GetStudentName();
+                int age = GetStudentAge();
+
+                Console.WriteLine($"\nStudent Registered Successfully!");
+                Console.WriteLine($"Name: {name}");
+                Console.WriteLine($"Age : {age}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("\n=== Exception Log ===");
+                Console.WriteLine("Message:");
+                Console.WriteLine(ex.Message);
+
+                Console.WriteLine("\nStackTrace:");
+                Console.WriteLine(ex.StackTrace);
+
+                Console.WriteLine("\nInnerException:");
+                Console.WriteLine(ex.InnerException != null ? ex.InnerException.Message : "No Inner Exception");
+            }
+            finally
+            {
+                Console.WriteLine("Operation Completed");
+            }
         }
     }
 
