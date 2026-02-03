@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace HighScoreLeaderboard
+﻿namespace HighScoreLeaderboard
 {
     class Program
     {
@@ -15,7 +13,7 @@ namespace HighScoreLeaderboard
             foreach (var item in leaderboard)
                 Console.WriteLine($"{item.Key}: {item.Value}");
             
-            Console.WriteLine($"\nGold Medalist: {leaderboard.First().Value}");
+            Console.WriteLine($"\nGold Medalist: {leaderboard.First().Value} - {leaderboard.First().Key}");
 
             leaderboard.Remove(58.91);
             leaderboard.Add(54.00, "SteadyEddie");
