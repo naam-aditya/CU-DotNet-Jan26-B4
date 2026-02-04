@@ -14,8 +14,13 @@
                 Console.WriteLine($"{item.Key}: {item.Value}");
             
             Console.WriteLine($"\nGold Medalist: {leaderboard.First().Value} - {leaderboard.First().Key}");
-
-            leaderboard.Remove(58.91);
+            
+            double key = 0.0;
+            foreach (var item in leaderboard)
+                if (item.Value == "SteadyEddie")
+                    key = item.Key;
+            
+            leaderboard.Remove(key);
             leaderboard.Add(54.00, "SteadyEddie");
         }
     }
