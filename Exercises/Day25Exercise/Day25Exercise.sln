@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureTerminal", "SecureTerminal\SecureTerminal.csproj", "{7562F266-7676-42C7-BF1E-F81D62B8A40D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PerformanceTracker", "PerformanceTracker\PerformanceTracker.csproj", "{1C13F77E-3669-4878-9E0E-6D184DD3ABED}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{7562F266-7676-42C7-BF1E-F81D62B8A40D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7562F266-7676-42C7-BF1E-F81D62B8A40D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7562F266-7676-42C7-BF1E-F81D62B8A40D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1C13F77E-3669-4878-9E0E-6D184DD3ABED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1C13F77E-3669-4878-9E0E-6D184DD3ABED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1C13F77E-3669-4878-9E0E-6D184DD3ABED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1C13F77E-3669-4878-9E0E-6D184DD3ABED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -16,13 +16,17 @@ namespace SecureTerminal
                     pincode.Remove(pincode.Length - 1, 1);
                 }
 
-                if (!char.IsBetween(pin.KeyChar, '0', '9'))
+                if (pincode.Length == 4 && pin.Key == ConsoleKey.Enter)
+                    break;
+
+                if (!char.IsBetween(pin.KeyChar, '0', '9') || pincode.Length == 4)
                     continue;
                 
                 Console.Write("*");
                 pincode.Append(pin.KeyChar);
+
             }
-            while (pincode.Length != 4);
+            while (true);
 
             Console.WriteLine($"\nPIN: {pincode}");
         }
