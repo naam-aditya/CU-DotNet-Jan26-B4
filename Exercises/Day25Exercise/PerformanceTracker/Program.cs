@@ -4,7 +4,7 @@
     {
         static void Main(string[] args)
         {
-            string fileName = @"PerformanceTracker/players.csv";
+            string fileName = @"players.csv";
             List<Player> players = [];
             
             try
@@ -49,8 +49,11 @@
                 $"--------------------------------"
             );
 
-            foreach (var player in players)
-                Console.WriteLine(player.ToString());
+
+
+            foreach (var player in players.OrderByDescending(players => players.StrikeRate))
+                if (player.BallsFaced >= 10)
+                    Console.WriteLine(player.ToString());
         }
     }
 
