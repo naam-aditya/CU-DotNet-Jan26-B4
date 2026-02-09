@@ -1,6 +1,4 @@
-﻿using System.Runtime.CompilerServices;
-
-namespace FreightTrackingSystem
+﻿namespace FreightTrackingSystem
 {
     class Program
     {
