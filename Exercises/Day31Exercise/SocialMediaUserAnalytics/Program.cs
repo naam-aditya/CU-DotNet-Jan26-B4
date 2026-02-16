@@ -14,13 +14,14 @@ class Program
             new Post{ Id = 2, UserId = 1, Likes = 50 }
         ];
 
-        Console.WriteLine("TOTAL LIKES BY USERS:");
+        Console.WriteLine("TOP USERS BY LIKES:");
         users.GroupJoin(
             posts,
             u => u.Id,
             p => p.UserId,
             (u, g) => new { u, TotalLikes = g.Sum(p => p.Likes) }
         )
+        .OrderByDescending(g => g.TotalLikes)
         .ToList()
         .ForEach(r => Console.WriteLine($"{r.u}: {r.TotalLikes}"));
 
