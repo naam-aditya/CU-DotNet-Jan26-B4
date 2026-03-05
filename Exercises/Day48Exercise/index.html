@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h2>Bank Account Opening Form</h2>
+
+  <form action="">
+    <table>
+      <tr>
+        <td colspan="2"><b>Personal Information</b></td>
+      </tr>
+
+      <tr>
+        <td>Full Name</td>
+        <td><input type="text" name="fullname" size="40"></td>
+      </tr>
+
+      <tr>
+        <td>Date of Birth</td>
+        <td><input type="date" name="dob"></td>
+      </tr>
+
+      <tr>
+        <td>Gender</td>
+        <td>
+          <input type="radio" name="gender", value="Male"> Male
+          <input type="radio" name="gender", value="Female"> Female
+          <input type="radio" name="gender", value="Gay"> Gay
+          <input type="radio" name="gender", value="Lesbian"> Lesbian
+          <input type="radio" name="gender", value="Other"> Other
+        </td>
+      </tr>
+
+      <tr>
+        <td>Marital Status</td>
+        <td>
+          <select name="marital_status" id="marital_status">
+            <option value="">--Select--</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Other">Other</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2"><b>Contact Information</b></td>
+      </tr>
+
+      <tr>
+        <td>Mobile Number</td>
+        <td><input type="tel" name="mobile"></td>
+      </tr>
+
+      <tr>
+        <td>Email Address</td>
+        <td><input type="email" name="email" id="email", size="40"></td>
+      </tr>
+
+      <tr>
+        <td>Residential Address</td>
+        <td><textarea name="address" id="address" rows="4" cols="35"></textarea></td>
+      </tr>
+
+      <tr>
+        <td>City</td>
+        <td><input type="text" name="city" id="city"></td>
+      </tr>
+
+      <tr>
+        <td>State</td>
+        <td><input type="text" name="State"></td>
+      </tr>
+
+      <tr>
+        <td>Pin Code</td>
+        <td><input type="text" name="pincode" pattern="[0-9]{1,}"></td>
+      </tr>
+
+      <tr>
+        <td>Account Type</td>
+        <td>
+          <select name="account_type" id="account_type">
+            <option value="">--Select--</option>
+            <option value="Savings">Savings</option>
+            <option value="Current">Current</option>
+            <option value="Fixed Deposit">Fixed Deposit</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Initial Deposit Amount</td>
+        <td><input type="number" name="deposit"></td>
+      </tr>
+
+      <tr>
+        <td>Identification Proof</td>
+        <td><input type="file" id="id_proof"></td>
+      </tr>
+
+      <tr>
+        <td colspan="2" align="center">
+          <input type="submit" value="Submit">
+          <input type="reset" value="Reset">
+        </td>
+      </tr>
+    </table>
+  </form>
+</body>
+</html>
