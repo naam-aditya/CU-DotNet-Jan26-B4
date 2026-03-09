@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+
+  <h2>Bank Account Opening Form</h2>
+
+  <form action="#" onsubmit="getFormValues(); return false;">
+    <table>
+      <tr>
+        <td colspan="2"><b>Personal Information</b></td>
+      </tr>
+
+      <tr>
+        <td>Full Name</td>
+        <td><input type="text" name="fullname" id="fullname" size="40"></td>
+      </tr>
+
+      <tr>
+        <td>Date of Birth</td>
+        <td><input type="date" name="dob" id="dob"></td>
+      </tr>
+
+      <tr>
+        <td>Gender</td>
+        <td>
+          <input type="radio" name="gender", value="Male"> Male
+          <input type="radio" name="gender", value="Female"> Female
+          <input type="radio" name="gender", value="Other"> Other
+        </td>
+      </tr>
+
+      <tr>
+        <td>Marital Status</td>
+        <td>
+          <select name="marital_status" id="marital_status">
+            <option value="">--Select--</option>
+            <option value="Single">Single</option>
+            <option value="Married">Married</option>
+            <option value="Other">Other</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="2"><b>Contact Information</b></td>
+      </tr>
+
+      <tr>
+        <td>Mobile Number</td>
+        <td><input type="tel" name="mobile" id="mobile"></td>
+      </tr>
+
+      <tr>
+        <td>Email Address</td>
+        <td><input type="email" name="email" id="email", size="40"></td>
+      </tr>
+
+      <tr>
+        <td>Residential Address</td>
+        <td><textarea name="address" id="address" rows="4" cols="35"></textarea></td>
+      </tr>
+
+      <tr>
+        <td>City</td>
+        <td><input type="text" name="city" id="city"></td>
+      </tr>
+
+      <tr>
+        <td>State</td>
+        <td><input type="text" name="State" id="state"></td>
+      </tr>
+
+      <tr>
+        <td>Pin Code</td>
+        <td><input type="text" name="pincode" id="pincode" pattern="[0-9]{1,}"></td>
+      </tr>
+
+      <tr>
+        <td>Account Type</td>
+        <td>
+          <select name="account_type" id="account_type">
+            <option value="">--Select--</option>
+            <option value="Savings">Savings</option>
+            <option value="Current">Current</option>
+            <option value="Fixed Deposit">Fixed Deposit</option>
+          </select>
+        </td>
+      </tr>
+
+      <tr>
+        <td>Initial Deposit Amount</td>
+        <td><input type="number" name="deposit" id="deposit_amount"></td>
+      </tr>
+
+      <tr>
+        <td>Identification Proof</td>
+        <td><input type="file" id="id_proof"></td>
+      </tr>
+
+      <tr>
+        <td colspan="2" align="center">
+          <input type="submit" value="Submit">
+          <input type="reset" value="Reset">
+        </td>
+      </tr>
+    </table>
+  </form>
+
+  <script>
+    function showFlag() {
+      
+    }
+
+    function getFormValues() {
+      const fullname = document.getElementById("fullname").value;
+      const dateOfBirth = document.getElementById("dob").value;
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const maritalStatus = document.getElementById("marital_status").value;
+      const mobileNumber = document.getElementById("mobile").value;
+      const email = document.getElementById("email").value;
+      const address = document.getElementById("address").value;
+      const city = document.getElementById("city").value;
+      const state = document.getElementById("state").value;
+      const pincode = document.getElementById("pincode").value;
+      const accountType = document.getElementById("account_type").value;
+      const depositAmount = document.getElementById("deposit_amount").value;
+
+      console.log(
+        `
+          Account Holder name: ${fullname}
+          Date of birth: ${dateOfBirth}
+          Gender: ${gender}
+          Marital Status: ${maritalStatus}
+          Contact number: ${mobileNumber}
+          Email: ${email}
+          Address: ${address}
+          City: ${city}
+          State: ${state}
+          Pincode: ${pincode}
+          Account type: ${accountType}
+          Initial Deposit Amount: ${depositAmount}
+        `
+      );
+    }
+  </script>
+</body>
+</html>
