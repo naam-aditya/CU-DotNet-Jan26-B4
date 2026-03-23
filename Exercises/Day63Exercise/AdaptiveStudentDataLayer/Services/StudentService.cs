@@ -25,4 +25,10 @@ public class StudentService : IStudentService
 
     public IEnumerable<Student> GetStudents() =>
         _studentRepository.GetStudents();
+
+    public void RemoveStudentById(int id) =>
+        _studentRepository.RemoveStudentById(id);
+
+    public void UpdateStudent(Student student) =>
+        _studentRepository.UpdateStudent(student);
 }

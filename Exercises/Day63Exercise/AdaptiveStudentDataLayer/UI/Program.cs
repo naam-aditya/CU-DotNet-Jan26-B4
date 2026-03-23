@@ -2,7 +2,7 @@
 using AdaptiveStudentDataLayer.Repository;
 using AdaptiveStudentDataLayer.Services;
 
-namespace AdaptiveStudentDataLayer;
+namespace AdaptiveStudentDataLayer.UI;
 
 class Program
 {
@@ -19,7 +19,7 @@ class Program
                 "Storage Options: 1 - List | 2 - JSON\n"
             )
         );
-
+        
         IStudentService studentService;
 
         while (true)
@@ -112,6 +112,81 @@ class Program
                 studentService.AddStudent(
                     new Student(name, int.Parse(gradeInput))
                 );
+            }
+
+            if (commands[0] == "rm" && commands.Length == 3)
+            {
+                if (commands[1] == "1")
+                    studentService = new StudentService(new ListStudentRepository());
+                else if (commands[1] == "2")
+                    studentService = new StudentService(new JsonStudentRepository());
+                else
+                {
+                    Console.WriteLine("\nINVALID COMMAND\n");
+                    continue;
+                }
+
+                if (int.TryParse(commands[2], out int id))
+                    studentService.RemoveStudentById(id);
+                else
+                {
+                    Console.WriteLine("\nINVALID COMMAND\n");
+                    continue;
+                }
+            }
+
+            if (commands[0] == "up" && commands.Length == 3)
+            {
+                if (commands[1] == "1")
+                    studentService = new StudentService(new ListStudentRepository());
+                else if (commands[1] == "2")
+                    studentService = new StudentService(new JsonStudentRepository());
+                else
+                {
+                    Console.WriteLine("\nINVALID COMMAND\n");
+                    continue;
+                }
+
+                Student student = new();
+
+                if (int.TryParse(commands[2], out int id))
+                    student.Id = id;
+                else
+                {
+                    Console.WriteLine("\nINVALID COMMAND\n");
+                    continue;
+                }
+
+                string? name;
+                while (true)
+                {
+                    Console.Write("Name: ");
+                    name = Console.ReadLine();
+                    if (string.IsNullOrEmpty(name) || string.IsNullOrWhiteSpace(name))
+                    {
+                        Console.WriteLine("\nENTER VALID NAME\n");
+                        continue;
+                    }
+
+                    break;
+                }
+
+                string? gradeInput;
+                while (true)
+                {
+                    Console.Write("Grade: ");
+                    gradeInput = Console.ReadLine();
+                    if (
+                        string.IsNullOrEmpty(gradeInput) || 
+                        string.IsNullOrWhiteSpace(gradeInput) ||
+                        !int.TryParse(gradeInput, out int grade)
+                    )
+                        Console.WriteLine("\nENTER VALID GRADE\n");
+                    else
+                        break;
+                }
+
+                studentService.UpdateStudent(student);
             }
         }
     }

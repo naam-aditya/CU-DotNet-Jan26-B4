@@ -14,6 +14,13 @@ public class ListStudentRepository : IStudentRepository
 
     public void RemoveStudent(Student student) =>
         _students.Remove(student);
+    
+    public void RemoveStudentById(int id)
+    {
+        var student = _students.Find(s => s.Id == id);
+        if (student != null)
+            _students.Remove(student);
+    }
 
     public void UpdateStudent(Student student)
     {

@@ -31,11 +31,37 @@ public class JsonStudentRepository : IStudentRepository
 
     public void RemoveStudent(Student student)
     {
-        throw new NotImplementedException();
+        IEnumerable<Student> students = GetStudents();
+        var data = students.FirstOrDefault(s => s.Id == student.Id);
+        if (data != null)
+            students.ToList().Remove(data);
+        
+        using StreamWriter streamWriter = new(fileName);
+        streamWriter.WriteLine(JsonSerializer.Serialize(students));
     }
 
     public void UpdateStudent(Student student)
     {
-        throw new NotImplementedException();
+        _students = GetStudents().ToList();
+        var data = _students.FirstOrDefault(s => s.Id == student.Id);
+        if (data != null)
+        {
+            data.Name = student.Name;
+            data.Grade = student.Grade;
+        }
+
+        using StreamWriter streamWriter = new(fileName);
+        streamWriter.WriteLine(JsonSerializer.Serialize(_students));
+    }
+
+    public void RemoveStudentById(int id)
+    {
+        _students = GetStudents().ToList();
+        var data = _students.Find(s => s.Id == id);
+        if (data != null)
+            _students.Remove(data);
+        
+        using StreamWriter streamWriter = new(fileName);
+        streamWriter.WriteLine(JsonSerializer.Serialize(_students));
     }
 }
