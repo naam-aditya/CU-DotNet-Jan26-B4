@@ -1,0 +1,63 @@
+@model IEnumerable<WealthTrack.Models.Investment>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="display-5">Portfolio</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TickerSymbol)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AssetName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchasePrice)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Quantity)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PurchaseDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TickerSymbol)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchasePrice)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PurchaseDate)
+                </td>
+                <td>
+                    @Html.ActionLink("Edit", "Index", new { id=item.Id }) |
+                    @Html.ActionLink("Details", "Index", new { id=item.Id }) |
+                    @Html.ActionLink("Delete", "Index", new { id=item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

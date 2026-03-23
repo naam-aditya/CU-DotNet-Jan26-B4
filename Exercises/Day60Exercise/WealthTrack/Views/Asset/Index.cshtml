@@ -1,0 +1,43 @@
+@model IEnumerable<WealthTrack.Models.Asset>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 class="display-5">Market</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AssetName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Price)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AssetName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Price)
+                </td>
+                <td>
+                    @Html.ActionLink("Invest", "Create", "Investment", new { id = item.Id })
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,11 @@
+namespace WealthTrack.Models;
+
+public class Investment
+{
+    public int Id { get; set; }
+    public required string TickerSymbol { get; set; }
+    public required string AssetName { get; set; }
+    public decimal PurchasePrice { get; set; }
+    public int Quantity { get; set; }
+    public DateTime PurchaseDate { get; set; }
+}
