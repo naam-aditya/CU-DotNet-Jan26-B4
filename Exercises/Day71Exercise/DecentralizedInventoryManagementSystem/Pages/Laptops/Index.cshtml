@@ -1,0 +1,68 @@
+@page
+@model DecentralizedInventoryManagementSystem.Pages.Laptops.IndexModel
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h4 class="fw-semibold mb-1">Laptop Inventory</h4>
+            <p class="text-muted mb-0">Manage your devices</p>
+        </div>
+
+        <a asp-page="Create" class="btn btn-primary">
+            + Add Laptop
+        </a>
+    </div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show">
+            @TempData["success"]
+            <button class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="card">
+        <div class="card-body p-0">
+
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                    <tr>
+                        <th class="ps-4">Model</th>
+                        <th>Serial</th>
+                        <th class="text-end pe-4">Price</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @if (!Model.Laptops.Any())
+                    {
+                        <tr>
+                            <td colspan="3" class="text-center py-5 text-muted">
+                                No laptops found.
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var laptop in Model.Laptops)
+                        {
+                            <tr>
+                                <td class="ps-4 fw-semibold">@laptop.ModelName</td>
+                                <td class="text-muted">@laptop.SerialNumber</td>
+                                <td class="text-end pe-4 fw-semibold">
+                                    ₹ @laptop.Price.ToString("N0")
+                                </td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

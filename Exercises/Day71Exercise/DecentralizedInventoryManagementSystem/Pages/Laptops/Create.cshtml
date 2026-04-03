@@ -1,0 +1,58 @@
+@page
+@model DecentralizedInventoryManagementSystem.Pages.Laptops.CreateModel
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card">
+                <div class="card-body p-4">
+
+                    <div class="mb-4">
+                        <h4 class="fw-semibold mb-1">Add Laptop</h4>
+                        <p class="text-muted mb-0">Enter device details</p>
+                    </div>
+
+                    <form method="post">
+
+                        <div class="mb-3">
+                            <label class="form-label">Model Name</label>
+                            <input asp-for="Laptop.ModelName" class="form-control form-control-lg" />
+                            <span asp-validation-for="Laptop.ModelName" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Serial Number</label>
+                            <input asp-for="Laptop.SerialNumber" class="form-control form-control-lg" />
+                            <span asp-validation-for="Laptop.SerialNumber" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label">Price</label>
+                            <input asp-for="Laptop.Price" class="form-control form-control-lg" />
+                            <span asp-validation-for="Laptop.Price" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <a asp-page="Index" class="btn btn-outline-secondary">
+                                Cancel
+                            </a>
+
+                            <button type="submit" class="btn btn-primary">
+                                Save
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
