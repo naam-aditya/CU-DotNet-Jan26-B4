@@ -1,0 +1,6 @@
+@Vagabond.TravelDestinationService_HostAddress = http://localhost:5013
+
+GET {{Vagabond.TravelDestinationService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

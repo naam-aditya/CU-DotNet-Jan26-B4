@@ -1,0 +1,45 @@
+@model IEnumerable<Destination>
+
+@{
+    ViewData["Title"] = "Travel Destinations";
+}
+
+<h2 class="mb-4">🌍 Travel Destinations</h2>
+
+<table class="table table-striped table-bordered">
+    <thead class="table-dark">
+        <tr>
+            <th>City</th>
+            <th>Country</th>
+            <th>Description</th>
+            <th>Rating</th>
+            <th>Last Visited</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var destination in Model)
+            {
+                <tr>
+                    <td>@destination.CityName</td>
+                    <td>@destination.Country</td>
+                    <td>@(destination.Description ?? "N/A")</td>
+                    <td>
+                        @for (int i = 0; i < destination.Rating; i++)
+                        {
+                            <span>⭐</span>
+                        }
+                    </td>
+                    <td>@destination.LastVisited.ToShortDateString()</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5" class="text-center">No destinations found.</td>
+            </tr>
+        }
+    </tbody>
+</table>
