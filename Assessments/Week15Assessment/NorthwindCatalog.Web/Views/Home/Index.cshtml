@@ -1,0 +1,64 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="container mt-5">
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome to Northwind Catalog</h1>
+        <p class="lead">Explore our product categories, browse products, and view detailed analytics.</p>
+        <hr class="my-4">
+    </div>
+
+    <div class="row mt-5">
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-list"></i> Browse Categories
+                    </h5>
+                    <p class="card-text">View all product categories available in our catalog.</p>
+                    <a href="@Url.Action("Categories", "Home")" class="btn btn-primary">View Categories</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-box"></i> Products
+                    </h5>
+                    <p class="card-text">Explore products by category with detailed pricing information.</p>
+                    <a href="@Url.Action("Categories", "Home")" class="btn btn-primary">Browse Products</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <i class="fas fa-chart-bar"></i> Analytics
+                    </h5>
+                    <p class="card-text">View category analytics including pricing and inventory summaries.</p>
+                    <a href="@Url.Action("Summary", "Home")" class="btn btn-primary">View Analytics</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="mt-5 p-4 bg-light rounded">
+        <h3>About This Application</h3>
+        <p>
+            This is a 3-layer .NET Full Stack application demonstrating:
+        </p>
+        <ul>
+            <li>Database-First approach with Entity Framework Core</li>
+            <li>Repository Pattern for data access</li>
+            <li>Web API with RESTful endpoints</li>
+            <li>MVC UI consuming APIs</li>
+            <li>Data Transfer Objects (DTOs) and AutoMapper</li>
+            <li>Bootstrap responsive UI</li>
+        </ul>
+    </div>
+</div>

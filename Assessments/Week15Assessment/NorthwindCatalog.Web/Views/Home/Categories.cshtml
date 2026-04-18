@@ -1,0 +1,35 @@
+@using NorthwindCatalog.Services.Dtos;
+@model List<CategoryDto>
+
+@{
+    ViewData["Title"] = "Categories";
+}
+
+<div class="container mt-5">
+    <h1 class="mb-4">Product Categories</h1>
+
+    <div class="row">
+        @foreach (var category in Model ?? new List<CategoryDto>())
+        {
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="@(category.ImageUrl ?? "/images/default-category.jpg")" class="card-img-top" alt="@category.CategoryName" style="height: 200px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title">@category.CategoryName</h5>
+                        <p class="card-text">Explore products in this category.</p>
+                    </div>
+                    <div class="card-footer">
+                        <a href="@Url.Action("Products", "Home", new { categoryId = category.CategoryId })" class="btn btn-primary w-100">View Products</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    @if (Model == null || Model.Count == 0)
+    {
+        <div class="alert alert-info" role="alert">
+            No categories available at the moment.
+        </div>
+    }
+</div>
