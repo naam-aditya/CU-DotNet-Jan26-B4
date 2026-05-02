@@ -1,0 +1,430 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<style>
+    :root {
+        --brand: #32B096;
+        --brand-dark: #279078;
+        --ink: #0f172a;
+        --muted: #64748b;
+    }
+
+    /* ============ HERO ============ */
+    .home-hero {
+        position: relative;
+        min-height: 82vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        overflow: hidden;
+    }
+    .home-hero .bg {
+        position: absolute; inset: 0;
+        background: linear-gradient(135deg, rgba(10,37,64,.65), rgba(10,37,64,.25)),
+                    url('https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+        transform: scale(1.05);
+        transition: transform 1.5s ease;
+    }
+    .home-hero:hover .bg { transform: scale(1.08); }
+
+    .home-hero .hero-inner {
+        position: relative; z-index: 2;
+        max-width: 820px; padding: 5rem 1.5rem 8rem;
+        text-align: center;
+    }
+    .hero-kicker {
+        display: inline-block;
+        background: rgba(255,255,255,.15); backdrop-filter: blur(6px);
+        border: 1px solid rgba(255,255,255,.25);
+        padding: .4rem 1rem; border-radius: 999px;
+        font-size: .85rem; font-weight: 500;
+        letter-spacing: .3px; margin-bottom: 1.5rem;
+    }
+    .home-hero h1 {
+        font-weight: 800; font-size: clamp(2.3rem, 5vw, 4rem);
+        letter-spacing: -1.2px; margin-bottom: 1.25rem; line-height: 1.05;
+        text-shadow: 0 2px 30px rgba(0,0,0,.2);
+    }
+    .home-hero .lead {
+        font-size: 1.15rem; opacity: .92; max-width: 600px;
+        margin: 0 auto 2rem; line-height: 1.6;
+    }
+    .hero-scroll-indicator {
+        position: absolute; bottom: 2rem; left: 50%;
+        transform: translateX(-50%); z-index: 2;
+        animation: bob 2s ease-in-out infinite;
+        color: #fff; opacity: .7; font-size: 1.5rem;
+    }
+    @@keyframes bob {
+        0%, 100% { transform: translateX(-50%) translateY(0); }
+        50%      { transform: translateX(-50%) translateY(10px); }
+    }
+
+    /* ============ FLOATING SEARCH CARD ============ */
+    .search-wrap { margin-top: -5rem; position: relative; z-index: 5; }
+    .search-card {
+        background: #fff; border-radius: 20px;
+        box-shadow: 0 25px 60px rgba(10,37,64,.2);
+        padding: 2rem;
+    }
+    .search-card label {
+        font-size: .75rem; font-weight: 700; color: #475569;
+        text-transform: uppercase; letter-spacing: .8px; margin-bottom: .5rem;
+    }
+    .search-card .form-select,
+    .search-card .form-control {
+        border: 1.5px solid #e2e8f0; border-radius: 12px;
+        padding: .8rem 1rem; font-size: .95rem;
+        transition: all .2s ease;
+    }
+    .search-card .form-select:focus,
+    .search-card .form-control:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px rgba(50,176,150,.15);
+    }
+    .search-card .btn-search {
+        width: 100%; padding: .85rem;
+        font-weight: 700; border-radius: 12px;
+        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+        color: #fff; border: none;
+        transition: all .2s ease;
+        letter-spacing: .3px;
+    }
+    .search-card .btn-search:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(50,176,150,.35);
+    }
+
+    /* ============ STATS ============ */
+    .stats-strip {
+        padding: 4rem 0 2rem;
+    }
+    .stat {
+        text-align: center; padding: 1rem;
+    }
+    .stat .num {
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        font-weight: 800; color: var(--brand);
+        letter-spacing: -.5px;
+        display: block; line-height: 1;
+    }
+    .stat .label {
+        color: var(--muted); font-size: .9rem;
+        font-weight: 500; margin-top: .5rem;
+        letter-spacing: .2px;
+    }
+
+    /* ============ FEATURES ============ */
+    .features { padding: 3rem 0; background: #fafbfc; }
+    .section-title {
+        text-align: center; margin-bottom: 3rem;
+    }
+    .section-title .eyebrow {
+        color: var(--brand); font-weight: 700;
+        font-size: .85rem; letter-spacing: 1px;
+        text-transform: uppercase; margin-bottom: .5rem;
+    }
+    .section-title h2 {
+        font-weight: 800; font-size: 2.25rem;
+        color: var(--ink); letter-spacing: -.5px;
+        margin: 0;
+    }
+
+    .feature-card {
+        background: #fff; border: 1px solid #f1f5f9;
+        padding: 2rem 1.5rem; border-radius: 16px;
+        text-align: center; height: 100%;
+        transition: all .3s ease;
+    }
+    .feature-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 20px 40px rgba(10,37,64,.08);
+        border-color: transparent;
+    }
+    .feature-card .icon {
+        font-size: 1.75rem; display: inline-flex;
+        align-items: center; justify-content: center;
+        width: 70px; height: 70px; border-radius: 20px;
+        background: linear-gradient(135deg, #e6f7f0, #d4f4ea);
+        color: var(--brand); margin-bottom: 1.25rem;
+        transition: transform .3s ease;
+    }
+    .feature-card:hover .icon { transform: scale(1.1) rotate(-5deg); }
+    .feature-card h5 {
+        font-weight: 700; font-size: 1.1rem;
+        color: var(--ink); margin-bottom: .5rem;
+    }
+    .feature-card p {
+        color: var(--muted); font-size: .9rem;
+        margin: 0; line-height: 1.6;
+    }
+
+    /* ============ DESTINATIONS ============ */
+    .destinations { padding: 5rem 0; }
+    .dest-card {
+        position: relative; border-radius: 20px; overflow: hidden;
+        height: 360px; color: #fff;
+        display: flex; flex-direction: column;
+        justify-content: flex-end; align-items: flex-start;
+        background-size: cover; background-position: center;
+        transition: all .4s cubic-bezier(.2, .8, .2, 1);
+        cursor: pointer;
+        isolation: isolate;
+    }
+    .dest-card::before {
+        content: ""; position: absolute; inset: 0;
+        background-size: cover; background-position: center;
+        background-image: inherit;
+        transition: transform .6s ease;
+        z-index: -1;
+    }
+    .dest-card::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(10,37,64,0) 30%, rgba(10,37,64,.85) 100%);
+        z-index: -1;
+    }
+    .dest-card:hover { transform: translateY(-8px); box-shadow: 0 25px 50px rgba(10,37,64,.25); }
+    .dest-card .content {
+        position: relative; z-index: 2;
+        padding: 1.5rem 1.75rem 1.75rem;
+    }
+    .dest-card .tag {
+        display: inline-block; background: rgba(255,255,255,.2);
+        backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,.3);
+        padding: .3rem .8rem; border-radius: 999px;
+        font-size: .75rem; font-weight: 600; margin-bottom: .75rem;
+        letter-spacing: .3px;
+    }
+    .dest-card .name {
+        font-size: 1.6rem; font-weight: 800;
+        letter-spacing: -.3px; margin-bottom: .35rem;
+    }
+    .dest-card .subtitle { font-size: .9rem; opacity: .9; }
+
+    /* ============ CTA ============ */
+    .cta-banner {
+        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+        color: #fff; padding: 4rem 0;
+        text-align: center;
+        border-radius: 24px;
+        margin: 2rem 0 5rem;
+        box-shadow: 0 20px 50px rgba(50,176,150,.3);
+    }
+    .cta-banner h3 {
+        font-weight: 800; font-size: 2.1rem;
+        letter-spacing: -.5px; margin-bottom: .75rem;
+    }
+    .cta-banner p { opacity: .95; margin-bottom: 1.75rem; font-size: 1.05rem; }
+    .cta-banner .btn-cta {
+        background: #fff; color: var(--brand-dark);
+        font-weight: 700; padding: .85rem 2rem;
+        border-radius: 12px; border: none;
+        transition: all .2s ease;
+        text-decoration: none; display: inline-block;
+    }
+    .cta-banner .btn-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0,0,0,.15);
+        color: var(--brand-dark);
+    }
+
+    /* Responsive */
+    @@media (max-width: 768px) {
+        .home-hero { min-height: 75vh; }
+        .search-wrap { margin-top: -3rem; }
+        .search-card { padding: 1.25rem; }
+        .cta-banner { padding: 3rem 1rem; margin: 2rem 1rem 3rem; }
+    }
+</style>
+
+<!-- ================= HERO ================= -->
+<section class="home-hero">
+    <div class="bg"></div>
+    <div class="hero-inner">
+        <span class="hero-kicker">🌊 Sail smarter · Save more</span>
+        <h1>Your Next Great<br />Escape Awaits</h1>
+        <p class="lead">
+            From weekend getaways to island-hopping adventures —
+            discover handpicked cruises from India's finest ships.
+        </p>
+    </div>
+    <div class="hero-scroll-indicator">↓</div>
+</section>
+
+<!-- ================= SEARCH CARD ================= -->
+<section class="search-wrap">
+    <div class="container">
+        <form asp-controller="Trips" asp-action="Index" method="get" class="search-card">
+            <div class="row g-3 align-items-end">
+                <div class="col-lg-3 col-md-6">
+                    <label for="Destination">Where to</label>
+                    <select id="Destination" name="Destination" class="form-select">
+                        <option value="">Any destination</option>
+                        <option>Goa</option>
+                        <option>Lakshadweep</option>
+                        <option>Sri Lanka</option>
+                        <option>Chennai</option>
+                        <option>Kochi</option>
+                        <option>Maldives</option>
+                        <option>Diu</option>
+                    </select>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <label for="DeparturePort">From</label>
+                    <select id="DeparturePort" name="DeparturePort" class="form-select">
+                        <option value="">Any port</option>
+                        <option>Mumbai</option>
+                        <option>Chennai</option>
+                        <option>Kochi</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label for="TravelMonth">Month</label>
+                    <input type="month" id="TravelMonth" name="TravelMonth" class="form-control" />
+                </div>
+                <div class="col-lg-2 col-md-6">
+                    <label for="Nights">Nights</label>
+                    <select id="Nights" name="Nights" class="form-select">
+                        <option value="">Any</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="7">7</option>
+                    </select>
+                </div>
+                <div class="col-lg-2 col-md-12">
+                    <button type="submit" class="btn-search">🔍 Search</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- ================= STATS ================= -->
+<section class="stats-strip">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="stat">
+                    <span class="num">10K+</span>
+                    <div class="label">Happy travellers</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat">
+                    <span class="num">25+</span>
+                    <div class="label">Destinations</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat">
+                    <span class="num">4.8★</span>
+                    <div class="label">Guest rating</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat">
+                    <span class="num">24/7</span>
+                    <div class="label">Onboard support</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section class="features">
+    <div class="container">
+        <div class="section-title">
+            <div class="eyebrow">Why us</div>
+            <h2>Built for a stress-free voyage</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="icon">🍽</div>
+                    <h5>All meals included</h5>
+                    <p>Multi-cuisine dining across every sailing.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="icon">✓</div>
+                    <h5>Free cancellation</h5>
+                    <p>Up to 46 days before your departure.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="icon">₹</div>
+                    <h5>Best price guarantee</h5>
+                    <p>Find it cheaper? We'll match it — promise.</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="feature-card">
+                    <div class="icon">🛟</div>
+                    <h5>24×7 support</h5>
+                    <p>Real humans, ready whenever you need us.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= DESTINATIONS ================= -->
+<section class="destinations">
+    <div class="container">
+        <div class="section-title">
+            <div class="eyebrow">Popular right now</div>
+            <h2>Explore iconic destinations</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6">
+                <a asp-controller="Trips" asp-action="Index" asp-route-Destination="Goa" class="text-decoration-none">
+                    <div class="dest-card" style="background-image:url('https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=900&q=80')">
+                        <div class="content">
+                            <span class="tag">🏖 Beach</span>
+                            <div class="name">Goa</div>
+                            <div class="subtitle">From ₹40,860 · 3-night cruises</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <a asp-controller="Trips" asp-action="Index" asp-route-Destination="Lakshadweep" class="text-decoration-none">
+                    <div class="dest-card" style="background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=900&q=80')">
+                        <div class="content">
+                            <span class="tag">🌴 Islands</span>
+                            <div class="name">Lakshadweep</div>
+                            <div class="subtitle">Island-hop across turquoise lagoons</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <a asp-controller="Trips" asp-action="Index" asp-route-Destination="Sri Lanka" class="text-decoration-none">
+                    <div class="dest-card" style="background-image:url('https://images.unsplash.com/photo-1524503033411-c9566986fc8f?auto=format&fit=crop&w=900&q=80')">
+                        <div class="content">
+                            <span class="tag">🛕 Culture</span>
+                            <div class="name">Sri Lanka</div>
+                            <div class="subtitle">Heritage ports · 5-night discoveries</div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ================= CTA ================= -->
+<div class="container">
+    <section class="cta-banner">
+        <h3>Ready to set sail?</h3>
+        <p>Browse every cruise on offer and find the one that fits your calendar.</p>
+        <a asp-controller="Trips" asp-action="Index" class="btn-cta">Explore all cruises →</a>
+    </section>
+</div>

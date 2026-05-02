@@ -1,0 +1,194 @@
+﻿@* @{
+    ViewData["Title"] = "Privacy Policy";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p> *@
+
+@{
+    ViewData["Title"] = "Home";
+}
+
+<!-- HERO -->
+<section class="bg-dark text-white position-relative" style="min-height:70vh;">
+    <img src="https://images.unsplash.com/photo-1548574505-5e239809ee19?auto=format&fit=crop&w=2000&q=80"
+         class="position-absolute w-100 h-100 object-fit-cover opacity-50" />
+
+    <div class="container position-relative z-1 py-5 text-center d-flex flex-column justify-content-center align-items-center"
+         style="min-height:70vh;">
+        <span class="badge bg-light text-dark rounded-pill mb-3 px-3 py-2">
+            🌊 Sail smarter · Save more
+        </span>
+
+        <h1 class="fw-bold display-5 mb-3">
+            Find your perfect cruise
+        </h1>
+
+        <p class="text-light mb-4" style="max-width:600px;">
+            Discover curated cruise experiences across India's most loved destinations.
+        </p>
+    </div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="container" style="margin-top:-50px;">
+    <form asp-controller="Trips" asp-action="Index" method="get" class="bg-white rounded-4 shadow p-3">
+
+        <div class="row g-2 align-items-center">
+
+            <div class="col-lg-3 col-md-6">
+                <select name="Destination" class="form-select border-0">
+                    <option value="">Destination</option>
+                    <option>Goa</option>
+                    <option>Lakshadweep</option>
+                    <option>Sri Lanka</option>
+                </select>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <select name="DeparturePort" class="form-select border-0">
+                    <option value="">From</option>
+                    <option>Mumbai</option>
+                    <option>Chennai</option>
+                    <option>Kochi</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <input type="month" name="TravelMonth" class="form-control border-0" />
+            </div>
+
+            <div class="col-lg-2 col-md-6">
+                <select name="Nights" class="form-select border-0">
+                    <option value="">Nights</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>5</option>
+                </select>
+            </div>
+
+            <div class="col-lg-2">
+                <button class="btn btn-primary w-100 rounded-pill">
+                    Search →
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>
+
+<!-- POPULAR DESTINATIONS -->
+<section class="py-5">
+    <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4 class="fw-semibold mb-0">Popular destinations</h4>
+            <a asp-controller="Trips" asp-action="Index" class="text-decoration-none small">
+                View all →
+            </a>
+        </div>
+
+        <div class="row g-3">
+
+            <!-- CARD -->
+            <div class="col-md-4">
+                <a asp-controller="Trips" asp-action="Index" asp-route-Destination="Goa" class="text-decoration-none">
+
+                    <div class="card border-0 rounded-4 overflow-hidden shadow-sm">
+                        <img src="https://images.unsplash.com/photo-1512343879784-a960bf40e7f2" class="card-img-top"
+                             style="height:220px; object-fit:cover;">
+
+                        <div class="card-body">
+                            <h6 class="fw-semibold mb-1">Goa</h6>
+                            <p class="text-muted small mb-0">
+                                3–5 night cruises
+                            </p>
+                        </div>
+                    </div>
+
+                </a>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e" class="card-img-top"
+                         style="height:220px; object-fit:cover;">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-1">Lakshadweep</h6>
+                        <p class="text-muted small mb-0">Island cruises</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 rounded-4 overflow-hidden shadow-sm">
+                    <img src="https://images.unsplash.com/photo-1524503033411-c9566986fc8f" class="card-img-top"
+                         style="height:220px; object-fit:cover;">
+                    <div class="card-body">
+                        <h6 class="fw-semibold mb-1">Sri Lanka</h6>
+                        <p class="text-muted small mb-0">Cultural voyages</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- FEATURE STRIP -->
+<section class="py-5 bg-light">
+    <div class="container">
+
+        <div class="row text-center g-4">
+
+            <div class="col-md-3">
+                <div>
+                    <div class="fs-3 mb-2">🍽</div>
+                    <h6 class="fw-semibold">All meals included</h6>
+                    <small class="text-muted">No hidden costs</small>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div>
+                    <div class="fs-3 mb-2">✓</div>
+                    <h6 class="fw-semibold">Free cancellation</h6>
+                    <small class="text-muted">Flexible booking</small>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div>
+                    <div class="fs-3 mb-2">₹</div>
+                    <h6 class="fw-semibold">Best price</h6>
+                    <small class="text-muted">Guaranteed deals</small>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div>
+                    <div class="fs-3 mb-2">🛟</div>
+                    <h6 class="fw-semibold">24/7 support</h6>
+                    <small class="text-muted">Always available</small>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CTA -->
+<section class="py-5">
+    <div class="container text-center">
+
+        <div class="bg-primary text-white rounded-4 p-5 shadow-sm">
+            <h4 class="fw-bold mb-2">Ready to set sail?</h4>
+            <p class="mb-3">Explore all cruises and plan your next trip.</p>
+
+            <a asp-controller="Trips" asp-action="Index" class="btn btn-light rounded-pill px-4">
+                Explore cruises →
+            </a>
+        </div>
+
+    </div>
+</section>

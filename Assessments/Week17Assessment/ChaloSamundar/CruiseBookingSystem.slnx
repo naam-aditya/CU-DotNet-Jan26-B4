@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/Services/">
+    <Project Path="TicketBookingSystem.AuthService/TicketBookingSystem.AuthService.csproj" />
+    <Project Path="TicketBookingSystem.BookingService/TicketBookingSystem.BookingService.csproj" />
+    <Project Path="TicketBookingSystem.CabinService/TicketBookingSystem.CabinService.csproj" />
+    <Project Path="TicketBookingSystem.ItineraryService/TicketBookingSystem.ItineraryService.csproj" />
+    <Project Path="TicketBookingSystem.PaymentService/TicketBookingSystem.PaymentService.csproj" />
+    <Project Path="TicketBookingSystem.TripService/TicketBookingSystem.TripService.csproj" />
+  </Folder>
+  <Project Path="TicketBookingSystem.Gateway/TicketBookingSystem.Gateway.csproj" />
+  <Project Path="TicketBookingSystem.Mvc/TicketBookingSystem.Mvc.csproj" />
+</Solution>

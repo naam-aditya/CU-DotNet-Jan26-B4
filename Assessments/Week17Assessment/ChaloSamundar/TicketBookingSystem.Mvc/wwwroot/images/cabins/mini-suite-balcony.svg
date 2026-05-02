@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="suite" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f7f1e8"/>
+      <stop offset="1" stop-color="#e6d7c6"/>
+    </linearGradient>
+    <linearGradient id="balcony" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#d7f0ff"/>
+      <stop offset="1" stop-color="#7fc0e8"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#suite)"/>
+  <polygon points="90,90 1110,90 995,190 205,190" fill="#dfcfbc"/>
+  <rect x="90" y="165" width="520" height="390" rx="26" fill="#fbfbfa" stroke="#d1c0ac" stroke-width="8"/>
+  <rect x="150" y="300" width="400" height="155" rx="20" fill="#ffffff"/>
+  <rect x="150" y="405" width="400" height="110" rx="18" fill="#1f6eb5"/>
+  <rect x="680" y="135" width="410" height="345" rx="26" fill="url(#balcony)" stroke="#b6d5e6" stroke-width="8"/>
+  <path d="M715 290c55-25 100 22 155 0s100 22 155 0v120H715z" fill="#6eaadb" opacity="0.55"/>
+  <rect x="735" y="480" width="300" height="28" rx="14" fill="#66737c"/>
+  <rect x="760" y="515" width="92" height="82" rx="10" fill="#8797a1"/>
+  <rect x="918" y="515" width="92" height="82" rx="10" fill="#8797a1"/>
+  <rect x="0" y="590" width="1200" height="110" fill="#6f645b"/>
+</svg>

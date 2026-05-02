@@ -1,0 +1,180 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.BookingViewModel
+
+<style>
+    :root {
+        --brand: #32B096;
+        --brand-dark: #279078;
+        --ink: #0f172a;
+        --muted: #64748b;
+    }
+
+    body { background: #f7f8fa; }
+
+    .booking-page h5 { color: var(--ink); letter-spacing: -.2px; }
+    .booking-page .text-muted { color: var(--muted) !important; }
+
+    .booking-page .card {
+        border: 1px solid #eceef2 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 14px rgba(10,37,64,.06) !important;
+    }
+
+    .booking-page .form-check-input:checked {
+        background-color: var(--brand);
+        border-color: var(--brand);
+    }
+
+    .booking-page .btn-brand {
+        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+        color: #fff; border: none; font-weight: 700;
+        border-radius: 12px; padding: .85rem 1rem;
+        letter-spacing: .3px; transition: all .2s ease;
+    }
+    .booking-page .btn-brand:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(50,176,150,.35);
+        color: #fff;
+    }
+
+    .booking-page .price-accent { color: var(--brand) !important; }
+</style>
+
+<div class="container my-5 booking-page">
+    <div class="row g-4">
+
+        <!-- LEFT -->
+        <div class="col-lg-8">
+
+            <!-- Journey Card -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Journey Details</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Route</p>
+                            <p class="fw-semibold">
+                                @Model.SourcePort → @Model.DestinationPort
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Journey</p>
+                            <p class="fw-semibold">@Model.JourneyName</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Embarkation</p>
+                            <p class="fw-semibold">@Model.Embarkation.ToString("dd MMM yyyy")</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Disembarkation</p>
+                            <p class="fw-semibold">@Model.Disembarkation.ToString("dd MMM yyyy")</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Cabin</p>
+                            <p class="fw-semibold">@Model.CabinType</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="text-muted mb-1">Nights</p>
+                            <p class="fw-semibold">@Model.Nights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passengers -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Passengers</h5>
+
+                    @for (int i = 0; i < Model.Passengers.Count; i++)
+                    {
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                            <div>
+                                <div class="fw-semibold">@Model.Passengers[i].Name</div>
+                                <small class="text-muted">
+                                    @Model.Passengers[i].Age yrs • @Model.Passengers[i].Gender
+                                </small>
+                            </div>
+
+                            <span class="text-muted small">Passenger @(i + 1)</span>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top:20px;">
+                <div class="card-body">
+
+                    <!-- Image -->
+                    <div class="mb-3 rounded overflow-hidden" style="height:160px;">
+                        <img src="https://images.pexels.com/photos/775294/pexels-photo-775294.jpeg"
+                             class="w-100 h-100"
+                             style="object-fit: cover;" />
+                    </div>
+
+                    <h5 class="fw-bold mb-3">Price Summary</h5>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Passengers</span>
+                        <span>@Model.Passengers.Count</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Base Fare</span>
+                        <span>₹5000</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <span>Taxes</span>
+                        <span>₹500</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Fare</span>
+                        <span>₹@Model.TotalFare</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Taxes & Fees</span>
+                        <span>Included</span>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">Total</h5>
+                        <h5 class="fw-bold price-accent mb-0">
+                            ₹@Model.TotalFare
+                        </h5>
+                    </div>
+
+                    <div class="form-check mt-3">
+                        <input class="form-check-input" type="checkbox" required>
+                        <label class="form-check-label">
+                            I confirm all details are correct
+                        </label>
+                    </div>
+
+                    <form asp-controller="Payment" asp-action="InitiateCard" method="post">
+                        @* <input type="hidden" asp-for="TotalFare" /> *@
+                        <button type="submit" class="btn-brand w-100 mt-4 py-2 d-flex justify-content-center align-items-center">
+                            Proceed to Payment
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

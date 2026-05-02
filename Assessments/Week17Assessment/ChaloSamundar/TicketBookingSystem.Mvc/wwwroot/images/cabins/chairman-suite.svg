@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="suitebg" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f8f2ea"/>
+      <stop offset="1" stop-color="#e5d7c6"/>
+    </linearGradient>
+    <linearGradient id="roundsea" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#dbf1ff"/>
+      <stop offset="1" stop-color="#84c0e7"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#suitebg)"/>
+  <polygon points="90,95 1110,95 1005,185 195,185" fill="#dfcfbd"/>
+  <rect x="85" y="160" width="1030" height="405" rx="30" fill="#fcfbf9" stroke="#d0c0ab" stroke-width="8"/>
+  <rect x="155" y="285" width="520" height="165" rx="22" fill="#ffffff"/>
+  <rect x="155" y="410" width="520" height="110" rx="18" fill="#1b66ad"/>
+  <circle cx="900" cy="280" r="88" fill="url(#roundsea)" stroke="#b7d5e8" stroke-width="10"/>
+  <path d="M835 315c38-12 66 10 102 0s60 10 96 0v45H835z" fill="#6da9d8" opacity="0.6"/>
+  <rect x="740" y="405" width="320" height="105" rx="20" fill="#dfd0bf"/>
+  <rect x="795" y="438" width="210" height="40" rx="16" fill="#bda894"/>
+  <rect x="105" y="588" width="990" height="62" rx="18" fill="#6e6358"/>
+  <path d="M135 604h930" stroke="#8d7e70" stroke-width="7"/>
+</svg>

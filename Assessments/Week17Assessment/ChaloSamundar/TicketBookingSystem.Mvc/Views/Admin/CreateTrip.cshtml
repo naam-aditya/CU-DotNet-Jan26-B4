@@ -1,0 +1,178 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.TripViewModel
+
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Create Trip" : "Edit Trip";
+    var isEdit = Model.Id != 0;
+}
+
+<style>
+    :root {
+        --brand: #32B096;
+        --brand-dark: #279078;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --surface: #f8fafc;
+        --border: #e2e8f0;
+    }
+
+    .admin-header {
+        background: linear-gradient(135deg,#1e293b,#0f172a);
+        color: #fff;
+        padding: 2rem 0;
+        margin-bottom: 2rem;
+    }
+
+    .form-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(10,37,64,.09);
+        padding: 2rem;
+    }
+
+    .section-label {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 1rem;
+        padding-bottom: .5rem;
+        border-bottom: 2px solid #e6f7f3;
+    }
+
+    .form-label {
+        font-size: .78rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+    }
+
+    .form-control, .form-select {
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: .75rem 1rem;
+        font-size: .95rem;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(50,176,150,.15);
+        }
+
+    .btn-save {
+        background: linear-gradient(135deg,var(--brand),var(--brand-dark));
+        color: #fff;
+        border: none;
+        padding: .85rem 2.5rem;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 24px rgba(50,176,150,.35);
+            color: #fff;
+        }
+</style>
+
+<div class="admin-header">
+    <div class="container">
+        <h2 style="font-weight:800;">@(isEdit ? "✏️ Edit Trip" : "➕ Create Trip")</h2>
+        <p style="opacity:.7;margin:0;">@(isEdit ? $"Editing: {Model.Heading}" : "Add a new cruise trip")</p>
+    </div>
+</div>
+
+<div class="container pb-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="form-card">
+
+                <form asp-controller="Admin"
+                      asp-action="@(isEdit ? "EditTrip" : "CreateTrip")"
+                      asp-route-id="@(isEdit ? Model.Id : null)"
+                      method="post">
+                    @Html.AntiForgeryToken()
+
+                    <p class="section-label">Trip Details</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label asp-for="Heading" class="form-label"></label>
+                            <input asp-for="Heading" class="form-control" placeholder="e.g. Goa to Lakshadweep" />
+                            <span asp-validation-for="Heading" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="ShipName" class="form-label"></label>
+                            <input asp-for="ShipName" class="form-control" placeholder="e.g. MV Coral Queen" />
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="TripType" class="form-label"></label>
+                            <select asp-for="TripType" class="form-select">
+                                <option value="">Select type</option>
+                                <option value="Leisure">Leisure</option>
+                                <option value="Adventure">Adventure</option>
+                                <option value="Family">Family</option>
+                                <option value="Luxury">Luxury</option>
+                                <option value="Budget">Budget</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Nights" class="form-label"></label>
+                            <input asp-for="Nights" type="number" min="1" class="form-control" placeholder="7" />
+                            <span asp-validation-for="Nights" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Price" class="form-label"></label>
+                            <input asp-for="Price" type="number" min="0" class="form-control" placeholder="25000" />
+                            <span asp-validation-for="Price" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <p class="section-label">Schedule</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="StartDate" class="form-label"></label>
+                            <input asp-for="StartDate" type="date" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="EndDate" class="form-label"></label>
+                            <input asp-for="EndDate" type="date" class="form-control" />
+                            <span asp-validation-for="EndDate" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <p class="section-label">Ports & Media</p>
+                    <div class="row g-3 mb-4">
+                        <div class="col-12">
+                            <label class="form-label">Ports (comma separated)</label>
+                            <input name="PortsInput" class="form-control"
+                                   value="@string.Join(", ", Model.Ports ?? [])"
+                                   placeholder="e.g. Mumbai, Goa, Lakshadweep" />
+                            <div class="text-muted" style="font-size:.75rem;margin-top:.3rem;">Enter ports separated by commas</div>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="ImageUrl" class="form-label"></label>
+                            <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 pt-2">
+                        <button type="submit" class="btn btn-save">
+                            @(isEdit ? "💾 Update Trip" : "✅ Create Trip")
+                        </button>
+                        <a asp-controller="Admin" asp-action="Trips"
+                           class="text-muted text-decoration-none small">← Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

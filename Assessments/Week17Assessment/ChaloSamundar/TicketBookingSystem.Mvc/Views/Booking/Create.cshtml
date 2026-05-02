@@ -1,0 +1,376 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.BookingViewModel
+
+<style>
+    :root {
+        --brand: #32B096;
+        --brand-dark: #279078;
+        --ink: #0f172a;
+        --muted: #64748b;
+    }
+
+    body { background: #f7f8fa; }
+
+    .booking-page h5 { color: var(--ink); letter-spacing: -.2px; }
+    .booking-page .text-muted { color: var(--muted) !important; }
+
+    .booking-page .card {
+        border: 1px solid #eceef2 !important;
+        border-radius: 16px !important;
+        box-shadow: 0 4px 14px rgba(10,37,64,.06) !important;
+    }
+
+    .booking-page .form-control,
+    .booking-page .form-select {
+        border: 1.5px solid #e2e8f0;
+        border-radius: 12px;
+        padding: .7rem .9rem;
+        font-size: .95rem;
+    }
+    .booking-page .form-control:focus,
+    .booking-page .form-select:focus {
+        border-color: var(--brand);
+        box-shadow: 0 0 0 3px rgba(50,176,150,.15);
+    }
+
+    .booking-page .btn-brand {
+        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+        color: #fff; border: none; font-weight: 700;
+        border-radius: 12px; padding: .85rem 1rem;
+        letter-spacing: .3px; transition: all .2s ease;
+    }
+    .booking-page .btn-brand:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(50,176,150,.35);
+        color: #fff;
+    }
+
+    .booking-page .btn-brand-outline {
+        background: #fff; color: var(--brand);
+        border: 1.5px solid var(--brand);
+        border-radius: 10px; font-weight: 600;
+        padding: .45rem .9rem;
+    }
+    .booking-page .btn-brand-outline:hover {
+        background: var(--brand); color: #fff;
+    }
+
+    .booking-page .price-accent { color: var(--brand) !important; }
+</style>
+
+<div class="container my-5 booking-page">
+    <div class="row g-4">
+
+        <!-- LEFT: Booking Form -->
+        <div class="col-lg-8">
+
+            <!-- Journey Info -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Journey Details</h5>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Route</p>
+                            <p class="fw-semibold">
+                                @Model.SourcePort (@Model.SourcePortCode)
+                                →
+                                @Model.DestinationPort (@Model.DestinationPortCode)
+                            </p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Journey</p>
+                            <p class="fw-semibold">@Model.JourneyName</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Embarkation</p>
+                            <p class="fw-semibold">@Model.Embarkation.ToString("dd MMM yyyy")</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Disembarkation</p>
+                            <p class="fw-semibold">@Model.Disembarkation.ToString("dd MMM yyyy")</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Cabin</p>
+                            <p class="fw-semibold">@Model.CabinType</p>
+                        </div>
+
+                        <div class="col-md-6">
+                            <p class="mb-1 text-muted">Nights</p>
+                            <p class="fw-semibold">@Model.Nights</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Passenger Section -->
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0">Passengers</h5>
+                        <button type="button" class="btn-brand-outline btn-sm" onclick="showPassengerForm()">
+                            + Add Passenger
+                        </button>
+                    </div>
+
+                    @* <!-- Input Form (hidden by default) -->
+                    <div id="passengerForm" class="p-3 mb-3 d-none">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <input id="pName" class="form-control" placeholder="Name" />
+                            </div>
+                            <div class="col-md-3">
+                                <input id="pAge" type="number" class="form-control" placeholder="Age" />
+                            </div>
+                            <div class="col-md-3">
+                                <select id="pGender" class="form-select">
+                                    <option value="">Gender</option>
+                                    <option>Male</option>
+                                    <option>Female</option>
+                                </select>
+                            </div>
+                            <div class="col-md-2 d-flex gap-2">
+                                <button class="btn btn-success w-100" onclick="savePassenger()">Save</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passenger Cards -->
+                    <form asp-action="Create" method="post">
+                        <div id="passengerContainer"></div>
+
+                        <button type="submit" class="btn-brand w-100 mt-3 py-2">
+                            Confirm Booking
+                        </button>
+                    </form> *@
+
+                    <form asp-action="Create" asp-route-reference="@Model.BookingReference" method="post">
+                        @* <input type="hidden" name="returnUrl" value="Payment" /> *@
+
+                        @* Surface server-side errors so users see why a click "did nothing" *@
+                        <div asp-validation-summary="All" class="alert alert-danger d-none"></div>
+                        @if (!ViewData.ModelState.IsValid)
+                        {
+                            <div class="alert alert-danger">
+                                @Html.ValidationSummary()
+                            </div>
+                        }
+
+                        <input type="hidden" asp-for="BookingReference" />
+                        <input type="hidden" asp-for="SourcePort" />
+                        <input type="hidden" asp-for="DestinationPort" />
+                        <input type="hidden" asp-for="SourcePortCode" />
+                        <input type="hidden" asp-for="DestinationPortCode" />
+                        <input type="hidden" asp-for="JourneyName" />
+                        <input type="hidden" asp-for="CabinType" />
+                        <input type="hidden" asp-for="Embarkation" />
+                        <input type="hidden" asp-for="Disembarkation" />
+                        <input type="hidden" asp-for="Nights" />
+                        <input type="hidden" asp-for="CruisePrice" />
+                        <input type="hidden" asp-for="CabinPricePerPerson" />
+                        <input type="hidden" asp-for="TotalFare" id="hiddenTotalFare" />
+
+                        <!-- Passenger Cards FIRST -->
+                        <div id="passengerContainer"></div>
+
+                        <!-- Input Form AFTER -->
+                        <div id="passengerForm" class="p-2 mb-3 d-none">
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <input id="pName" class="form-control" placeholder="Name" />
+                                </div>
+                                <div class="col-md-3">
+                                    <input id="pAge" type="number" class="form-control" placeholder="Age" />
+                                </div>
+                                <div class="col-md-3">
+                                    <select id="pGender" class="form-select">
+                                        <option value="">Gender</option>
+                                        <option>Male</option>
+                                        <option>Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2 d-flex">
+                                    <button type="button" class="btn btn-success w-100" onclick="savePassenger()">
+                                        Save
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn-brand w-100 mt-3 py-2">
+                            Confirm Booking
+                        </button>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- RIGHT: Summary -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0 sticky-top" style="top: 20px;">
+                <div class="card-body">
+
+                    <h5 class="fw-bold mb-3">Booking Summary</h5>
+
+                    <div class="mb-3 rounded overflow-hidden" style="height:180px;">
+                        <img src="https://images.pexels.com/photos/775294/pexels-photo-775294.jpeg"
+                            class="w-100 h-100"
+                            style="object-fit: cover; object-position: center;" />
+                    </div>
+
+                    <div class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Cabin</span>
+                        <span>@Model.CabinType</span>
+                    </div>
+
+                    <div class="mb-2 d-flex justify-content-between">
+                        <span class="text-muted">Passengers</span>
+                        <span id="passengerCount">@Model.Passengers.Count</span>
+                    </div>
+
+                    <div class="mb-3 d-flex justify-content-between">
+                        <span class="text-muted">Duration</span>
+                        <span>@Model.Nights Nights</span>
+                    </div>
+
+                    <hr />
+
+                    <div class="mb-2 d-flex justify-content-between small">
+                        <span class="text-muted">Cruise base fare</span>
+                        <span>₹@Model.CruisePrice.ToString("N2")</span>
+                    </div>
+
+                    <div class="mb-2 d-flex justify-content-between small">
+                        <span class="text-muted">
+                            Cabin × <span id="passengerCountInline">@Math.Max(1, Model.Passengers.Count)</span>
+                            (@(Model.CabinPricePerPerson.ToString("N2")) ea.)
+                        </span>
+                        <span id="cabinSubtotal">
+                            ₹@((Model.CabinPricePerPerson * Math.Max(1, Model.Passengers.Count)).ToString("N2"))
+                        </span>
+                    </div>
+
+                    <hr />
+
+                    <div class="d-flex justify-content-between">
+                        <span class="fw-semibold">Total Fare</span>
+                        <span class="fw-bold price-accent" id="totalFareDisplay"
+                              data-cruise="@Model.CruisePrice"
+                              data-cabin="@Model.CabinPricePerPerson">
+                            ₹@Model.TotalFare.ToString("N2")
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let passengers = [];
+
+    function showPassengerForm() {
+        const form = document.getElementById("passengerForm");
+        form.classList.remove("d-none");
+
+        form.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+
+    function savePassenger() {
+        const name = document.getElementById("pName").value;
+        const age = document.getElementById("pAge").value;
+        const gender = document.getElementById("pGender").value;
+
+        if (!name || !age || !gender) return alert("Fill all fields");
+
+        passengers.push({ name, age, gender });
+
+        renderPassengers();
+        clearForm();
+    }
+
+    function renderPassengers() {
+        const container = document.getElementById("passengerContainer");
+        container.innerHTML = "";
+
+        passengers.forEach((p, i) => {
+            container.innerHTML += `
+            <div class="border rounded p-3 mb-2 d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="fw-semibold">${p.name}</div>
+                    <small class="text-muted">${p.age} yrs • ${p.gender}</small>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-sm btn-light" onclick="editPassenger(${i})">
+                        ✏️
+                    </button>
+                    <button type="button" class="btn btn-sm btn-light text-danger" onclick="deletePassenger(${i})">
+                        🗑️
+                    </button>
+                </div>
+
+                <!-- Hidden inputs for model binding -->
+                <input type="hidden" name="Passengers[${i}].Name" value="${p.name}" />
+                <input type="hidden" name="Passengers[${i}].Age" value="${p.age}" />
+                <input type="hidden" name="Passengers[${i}].Gender" value="${p.gender}" />
+            </div>`;
+        });
+
+        updateCount();
+    }
+
+    function editPassenger(index) {
+        const p = passengers[index];
+
+        document.getElementById("pName").value = p.name;
+        document.getElementById("pAge").value = p.age;
+        document.getElementById("pGender").value = p.gender;
+
+        passengers.splice(index, 1);
+        renderPassengers();
+        showPassengerForm();
+    }
+
+    function deletePassenger(index) {
+        passengers.splice(index, 1);
+        renderPassengers();
+    }
+
+    function clearForm() {
+        document.getElementById("pName").value = "";
+        document.getElementById("pAge").value = "";
+        document.getElementById("pGender").value = "";
+        document.getElementById("passengerForm").classList.add("d-none");
+    }
+
+    function updateCount() {
+        const count = passengers.length || 1;       // assume 1 if user hasn't added any
+        document.getElementById("passengerCount").innerText = passengers.length;
+        document.getElementById("passengerCountInline").innerText = count;
+
+        // Re-compute total: cruise base + (passengers × cabin per person)
+        const totalEl  = document.getElementById("totalFareDisplay");
+        const cruise   = parseFloat(totalEl.dataset.cruise) || 0;
+        const cabin    = parseFloat(totalEl.dataset.cabin) || 0;
+        const subtotal = cabin * count;
+        const total    = cruise + subtotal;
+
+        document.getElementById("cabinSubtotal").innerText =
+            "₹" + subtotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        totalEl.innerText =
+            "₹" + total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Keep the hidden form value in sync so it posts the correct number
+        document.getElementById("hiddenTotalFare").value = total.toFixed(2);
+    }
+</script>

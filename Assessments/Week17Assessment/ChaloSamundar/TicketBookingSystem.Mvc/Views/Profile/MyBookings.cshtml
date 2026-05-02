@@ -1,0 +1,297 @@
+﻿@model List<TicketBookingSystem.Mvc.DTOs.BookingDto>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<style>
+    :root { --brand:#32B096; --brand-dark:#279078; --ink:#0f172a; --muted:#64748b; --surface:#f8fafc; --border:#e2e8f0; }
+
+    .bookings-header {
+        background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+        color: #fff; padding: 2.5rem 0 5rem; position: relative; overflow: hidden;
+    }
+    .bookings-header::after {
+        content:""; position:absolute; inset:0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' stroke='%23ffffff' stroke-width='.4' fill='none'/%3E%3C/svg%3E") repeat;
+        opacity:.12;
+    }
+    .bookings-header .inner { position:relative; z-index:2; }
+    .bookings-header h2 { font-weight:800; letter-spacing:-.5px; }
+
+    .bookings-page { min-height:60vh; background:var(--surface); padding:3rem 0 5rem; }
+
+    .bookings-wrap { margin-top:-3.5rem; position:relative; z-index:5; }
+
+    .booking-card {
+        background: #fff; border-radius: 20px;
+        box-shadow: 0 8px 32px rgba(10,37,64,.08);
+        overflow: hidden; transition: transform .2s ease, box-shadow .2s ease;
+        margin-bottom: 1.25rem;
+    }
+    .booking-card:hover { transform: translateY(-3px); box-shadow: 0 16px 48px rgba(10,37,64,.13); }
+
+    .card-topbar {
+        background: linear-gradient(135deg, #f0fdf9, #e6f7f3);
+        padding: 1.1rem 1.5rem;
+        display: flex; align-items: center; justify-content: space-between;
+        border-bottom: 1px solid #d4f4ea; flex-wrap: wrap; gap: .5rem;
+    }
+
+    .route-wrap { display:flex; align-items:center; gap:.75rem; }
+    .port-code { font-size: 1.3rem; font-weight: 900; color: var(--brand-dark); letter-spacing: -.5px; }
+    .route-arrow { display:flex; flex-direction:column; align-items:center; gap:2px; }
+    .route-arrow .arrow-line { width:60px; height:2px; background:var(--brand); position:relative; }
+    .route-arrow .arrow-line::after { content:"▶"; position:absolute; right:-8px; top:-7px; color:var(--brand); font-size:.75rem; }
+    .route-arrow .nights-label { font-size:.65rem; font-weight:700; color:var(--muted); letter-spacing:.5px; text-transform:uppercase; }
+
+    .status-badge { padding:.3rem .9rem; border-radius:50px; font-size:.72rem; font-weight:700; letter-spacing:.5px; text-transform:uppercase; }
+    .status-confirmed { background:#dcfce7; color:#15803d; }
+    .status-completed { background:#fee2e2; color:#b91c1c; }
+    .status-initiated  { background:#fef9c3; color:#92400e; }
+
+    .card-body-inner {
+        padding: 1.25rem 1.5rem;
+        display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem 1.5rem;
+    }
+    .detail-field .d-label { font-size:.68rem; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--muted); margin-bottom:.25rem; }
+    .detail-field .d-value { font-size:.92rem; font-weight:600; color:var(--ink); }
+    .detail-field .d-value.empty { color:#cbd5e1; font-style:italic; font-weight:400; }
+
+    .card-footer-inner {
+        padding: .9rem 1.5rem; background:#fafbfc;
+        border-top: 1px solid var(--border);
+        display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:.5rem;
+    }
+    .ref-text { font-size:.78rem; color:var(--muted); font-family:monospace; }
+    .fare-text { font-size:1.05rem; font-weight:800; color:var(--brand-dark); }
+
+    .empty-state { background:#fff; border-radius:20px; box-shadow:0 8px 32px rgba(10,37,64,.07); padding:4rem 2rem; text-align:center; }
+    .empty-icon { font-size:4rem; margin-bottom:1rem; opacity:.6; }
+    .empty-state h4 { font-weight:800; color:var(--ink); margin-bottom:.5rem; }
+    .empty-state p  { color:var(--muted); }
+
+    .btn-cruise {
+        background:linear-gradient(135deg,var(--brand),var(--brand-dark));
+        color:#fff; border:none; padding:.75rem 2rem; border-radius:50px;
+        font-weight:700; font-size:.95rem; text-decoration:none; display:inline-block;
+        transition:all .2s ease;
+    }
+    .btn-cruise:hover { transform:translateY(-2px); box-shadow:0 10px 24px rgba(50,176,150,.35); color:#fff; }
+
+
+    /* ── Passenger toggle button ── */
+    .pax-toggle-btn {
+        background: #f0fdf9; border: 1.5px solid #32B096;
+        color: #279078; border-radius: 50px;
+        padding: .35rem 1rem; font-size: .8rem; font-weight: 700;
+        cursor: pointer; transition: all .2s ease;
+        display: inline-flex; align-items: center; gap: .4rem;
+    }
+    .pax-toggle-btn:hover { background: #32B096; color: #fff; }
+    .pax-chevron { font-size: .65rem; transition: transform .3s ease; }
+    .pax-toggle-btn[aria-expanded="true"] .pax-chevron { transform: rotate(180deg); }
+
+    /* ── Passenger panel ── */
+    .pax-panel { padding: 1rem 1.5rem 1.25rem; border-top: 1px solid var(--border); background: #fafbfc; }
+    .pax-panel-title { font-size:.68rem; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--muted); margin-bottom:.75rem; }
+    .pax-list { display:flex; flex-direction:column; gap:.6rem; }
+    .pax-row {
+        display: flex; align-items: center; gap: .85rem;
+        background: #fff; border: 1px solid var(--border);
+        border-radius: 12px; padding: .65rem 1rem;
+    }
+    .pax-avatar {
+        width:36px; height:36px; border-radius:50%;
+        background: linear-gradient(135deg,#32B096,#279078);
+        color:#fff; display:flex; align-items:center; justify-content:center;
+        font-weight:800; font-size:.9rem; flex-shrink:0;
+    }
+    .pax-info { flex:1; }
+    .pax-name { font-weight:700; font-size:.9rem; color:var(--ink); }
+    .pax-meta { font-size:.75rem; color:var(--muted); margin-top:.1rem; }
+    .pax-num  { font-size:.72rem; font-weight:600; color:var(--brand); background:#f0fdf9; padding:.25rem .6rem; border-radius:50px; }
+
+    @@media(max-width:576px) {
+        .card-topbar { flex-direction:column; align-items:flex-start; }
+        .card-body-inner { grid-template-columns:1fr 1fr; }
+        .bookings-header { padding:2rem 0 4rem; }
+    }
+</style>
+
+<!-- Header -->
+<div class="bookings-header">
+    <div class="container inner">
+        <div class="d-flex align-items-center gap-3">
+            <div style="width:72px;height:72px;border-radius:50%;background:rgba(255,255,255,.25);border:3px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;font-size:2rem;">
+                🎫
+            </div>
+            <div>
+                <h2 class="mb-0">My Bookings</h2>
+                <p class="mb-0 mt-1 opacity-75">
+                    @(Model.Count == 0 ? "No trips booked yet" : $"{Model.Count} trip{(Model.Count > 1 ? "s" : "")} found")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Body -->
+<div class="bookings-page pt-0">
+    <div class="container bookings-wrap">
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-icon">⚓</div>
+                <h4>No voyages yet!</h4>
+                <p class="mb-4">Looks like you haven't booked any cruises yet.<br>Start exploring and set sail on your next adventure.</p>
+                <a asp-controller="Trips" asp-action="Index" class="btn-cruise">🚢 Find A Cruise</a>
+            </div>
+        }
+        else
+        {
+            @foreach (var b in Model)
+            {
+                
+                    // Determine status badge
+                    var statusCss = b.Status switch
+                    {
+                        0 => "status-confirmed",  // Confirmed
+                        1 => "status-completed",  // Cancelled
+                        2 => "status-initiated",  // Initiated
+                        _ => "status-initiated"
+                    };
+                    var statusText = b.Status switch
+                    {
+                        0 => "Confirmed",
+                        1 => "Cancelled",
+                        2 => "Initiated",
+                        _ => "Initiated"
+                    };
+
+                    // Port codes — use stored code or derive from port name
+                    var srcCode = !string.IsNullOrWhiteSpace(b.SourcePortCode)
+                        ? b.SourcePortCode
+                        : b.SourcePort?.Length >= 3 ? b.SourcePort[..3].ToUpper() : b.SourcePort?.ToUpper() ?? "---";
+                    var dstCode = !string.IsNullOrWhiteSpace(b.DestinationPortCode)
+                        ? b.DestinationPortCode
+                        : b.DestinationPort?.Length >= 3 ? b.DestinationPort[..3].ToUpper() : b.DestinationPort?.ToUpper() ?? "---";
+
+                    // Passenger count — use list count or NumberOfPassengers field
+                    var paxCount = b.Passengers?.Count > 0 ? b.Passengers.Count : b.NumberOfPassengers;
+
+                    // Date display
+                    var embark  = b.Embarkation  == default ? "—" : b.Embarkation.ToString("dd MMM yyyy");
+                    var disembark = b.Disembarkation == default ? "—" : b.Disembarkation.ToString("dd MMM yyyy");
+                    var bookedOn = b.BookingDate == default ? "—" : b.BookingDate.ToString("dd MMM yyyy");
+                
+
+                <div class="booking-card">
+
+                    <!-- Top bar -->
+                    <div class="card-topbar">
+                        <div class="route-wrap">
+                            <div>
+                                <div class="port-code">@srcCode</div>
+                                <div style="font-size:.72rem;color:var(--muted);">@(b.SourcePort ?? "—")</div>
+                            </div>
+                            <div class="route-arrow">
+                                <div class="arrow-line"></div>
+                                <div class="nights-label">@b.Nights nights</div>
+                            </div>
+                            <div>
+                                <div class="port-code">@dstCode</div>
+                                <div style="font-size:.72rem;color:var(--muted);">@(b.DestinationPort ?? "—")</div>
+                            </div>
+                        </div>
+                        <span class="status-badge @statusCss">@statusText</span>
+                    </div>
+
+                    <!-- Detail grid -->
+                    <div class="card-body-inner">
+                        <div class="detail-field">
+                            <div class="d-label">Journey</div>
+                            <div class="d-value @(string.IsNullOrWhiteSpace(b.JourneyName) ? "empty" : "")">
+                                @(string.IsNullOrWhiteSpace(b.JourneyName) ? "—" : b.JourneyName)
+                            </div>
+                        </div>
+                        <div class="detail-field">
+                            <div class="d-label">Cabin Type</div>
+                            <div class="d-value @(string.IsNullOrWhiteSpace(b.CabinType) ? "empty" : "")">
+                                @(string.IsNullOrWhiteSpace(b.CabinType) ? "—" : b.CabinType)
+                            </div>
+                        </div>
+                        <div class="detail-field">
+                            <div class="d-label">Embarkation</div>
+                            <div class="d-value">@embark</div>
+                        </div>
+                        <div class="detail-field">
+                            <div class="d-label">Disembarkation</div>
+                            <div class="d-value">@disembark</div>
+                        </div>
+                        <div class="detail-field">
+                            <div class="d-label">Passengers</div>
+                            <div class="d-value">@paxCount traveller@(paxCount != 1 ? "s" : "")</div>
+                        </div>
+                        <div class="detail-field">
+                            <div class="d-label">Booked On</div>
+                            <div class="d-value">@bookedOn</div>
+                        </div>
+                    </div>
+
+                    <!-- Footer with passenger toggle -->
+                    <div class="card-footer-inner">
+                        <span class="ref-text">Ref: @b.BookingReference</span>
+                        <div class="d-flex align-items-center gap-3">
+                            @if (b.Passengers != null && b.Passengers.Count > 0)
+                            {
+                                <button class="pax-toggle-btn"
+                                        type="button"
+                                        data-bs-toggle="collapse"
+                                        data-bs-target="#pax-@b.BookingReference.Replace("-","")"
+                                        aria-expanded="false">
+                                    &#128101; View Passengers <span class="pax-chevron">&#9660;</span>
+                                </button>
+                            }
+                            <span class="fare-text">&#8377; @b.TotalFare.ToString("N0")</span>
+                        </div>
+                    </div>
+
+                    @if (b.Passengers != null && b.Passengers.Count > 0)
+                    {
+                        <div class="collapse" id="pax-@b.BookingReference.Replace("-","")">
+                            <div class="pax-panel">
+                                <div class="pax-panel-title">Passenger Details</div>
+                                <div class="pax-list">
+                                    @foreach (var (p, i) in b.Passengers.Select((p, i) => (p, i)))
+                                    {
+                                        <div class="pax-row">
+                                            <div class="pax-avatar">@p.Name[0].ToString().ToUpper()</div>
+                                            <div class="pax-info">
+                                                <div class="pax-name">@p.Name</div>
+                                                <div class="pax-meta">@p.Age years &middot; @p.Gender</div>
+                                            </div>
+                                            <div class="pax-num">Passenger @(i + 1)</div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            }
+
+            <div class="text-center mt-4 d-flex justify-content-center gap-3">
+                <a asp-controller="Trips" asp-action="Index" class="btn-cruise">🚢 Book Another Cruise</a>
+                <a asp-controller="Home" asp-action="Index"
+                   class="btn-cruise"
+                   style="background:#fff;color:#32B096;border:2px solid #32B096;">
+                    🏠 Back to Home
+                </a>
+            </div>
+        }
+    </div>
+</div>

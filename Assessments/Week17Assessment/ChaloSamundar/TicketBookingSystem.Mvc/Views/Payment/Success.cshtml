@@ -1,0 +1,162 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.PaymentSuccessViewModel
+
+@{
+    ViewData["Title"] = "Payment Successful";
+}
+
+<style>
+    .success-page {
+        background-color: #F8F7FF;
+        min-height: 80vh;
+        padding: 3rem 0;
+    }
+
+    .success-card {
+        max-width: 460px;
+        margin: 0 auto;
+        background: #fff;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(46,139,87,.13);
+    }
+
+    .success-header {
+        background: linear-gradient(135deg, #2e8b57, #20b2aa);
+        padding: 2rem;
+        text-align: center;
+        color: #fff;
+    }
+
+    .success-icon {
+        width: 70px;
+        height: 70px;
+        background: rgba(255,255,255,.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem;
+    }
+
+    .success-body {
+        padding: 1.75rem;
+    }
+
+    .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: .6rem 0;
+        border-bottom: 1px solid #f0faf5;
+        font-size: .875rem;
+    }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+    .detail-label {
+        color: #888;
+    }
+
+    .detail-value {
+        font-weight: 600;
+        color: #222;
+    }
+
+    .btn-home {
+        background: linear-gradient(90deg, #2e8b57, #20b2aa);
+        color: #fff !important;
+        border: none;
+        border-radius: 8px;
+        padding: .75rem 1rem;
+        font-size: .95rem;
+        font-weight: 600;
+        width: 100%;
+        text-align: center;
+        text-decoration: none;
+        display: block;
+        transition: all .2s;
+        margin-top: 1.25rem;
+    }
+
+        .btn-home:hover {
+            background: linear-gradient(90deg, #20b2aa, #2e8b57);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(46,139,87,.25);
+        }
+
+    .badge-success {
+        background: #e8f5f0;
+        color: #2e8b57;
+        padding: .3rem .75rem;
+        border-radius: 20px;
+        font-size: .8rem;
+        font-weight: 600;
+    }
+</style>
+
+<div class="success-page">
+    <div class="container">
+        <div class="success-card">
+
+            <div class="success-header">
+                <div class="success-icon">
+                    <svg width="36" height="36" fill="none" stroke="#fff" stroke-width="2.5" viewBox="0 0 24 24">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </div>
+                <h4 class="fw-bold mb-1">Payment Successful!</h4>
+                <p class="mb-0" style="opacity:.85;font-size:.9rem">Your cruise booking is confirmed</p>
+            </div>
+
+            <div class="success-body">
+                <div class="bg-light rounded-3 p-3 mb-3">
+                    <div class="detail-row">
+                        <span class="detail-label">Booking Reference</span>
+                        <span class="detail-value">#@Model.BookingId</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Amount Paid</span>
+                        <span class="detail-value" style="color:#2e8b57">&#8377;@Model.Amount.ToString("N0")</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Payment Method</span>
+                        <span class="detail-value">@Model.PaymentMethod</span>
+                    </div>
+                    <div class="detail-row">
+                        <span class="detail-label">Status</span>
+                        <span class="badge-success">&#10003; @Model.Status</span>
+                    </div>
+                    @if (!string.IsNullOrEmpty(Model.RazorpayPaymentId))
+                    {
+                        <div class="detail-row">
+                            <span class="detail-label">Transaction ID</span>
+                            <span class="detail-value" style="font-size:.75rem">@Model.RazorpayPaymentId</span>
+                        </div>
+                    }
+                    @if (Model.PaymentId > 0)
+                    {
+                        <div class="detail-row">
+                            <span class="detail-label">Payment ID</span>
+                            <span class="detail-value">#@Model.PaymentId</span>
+                        </div>
+                    }
+                </div>
+
+                <div class="alert small mb-3" style="background:#e8f5f0;color:#1a5c38;border:1px solid #c8e6d8;border-radius:8px;text-align:center">
+                    &#128231; A confirmation will be sent to your registered email.
+                </div>
+
+                <a href="/" class="btn-home">&#127757; Back to Home</a>
+                <a asp-controller="Profile" asp-action="MyBookings" asp-route-data=@System.Text.Json.JsonSerializer.Serialize(Model) class="btn-home" style="background:#fff;color:#2e8b57 !important;border:1.5px solid #2e8b57;margin-top:8px">
+                    &#128203; View My Bookings
+                </a>
+            </div>
+
+            <div style="text-align:center;padding:.75rem;font-size:.72rem;color:#bbb;border-top:1px solid #f5f5f5">
+                &#128274; Secured by Razorpay &middot; PCI DSS Compliant
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,176 @@
+﻿@{
+    ViewData["Title"] = "Admin Dashboard";
+    var recentBookings = ViewBag.RecentBookings as List<TicketBookingSystem.Mvc.DTOs.BookingDto> ?? new();
+}
+
+<style>
+    :root { --brand:#32B096; --brand-dark:#279078; --ink:#0f172a; --muted:#64748b; --surface:#f8fafc; --border:#e2e8f0; }
+
+    .admin-header {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        color:#fff; padding:2rem 0; margin-bottom:2rem;
+    }
+    .admin-header h2 { font-weight:800; font-size:1.8rem; }
+    .admin-header p { opacity:.7; margin:0; }
+
+    /* Stat cards */
+    .stat-card {
+        background:#fff; border-radius:16px;
+        box-shadow:0 4px 20px rgba(10,37,64,.08);
+        padding:1.5rem; display:flex; align-items:center; gap:1rem;
+        border-left:4px solid var(--brand);
+        transition:transform .2s ease;
+    }
+    .stat-card:hover { transform:translateY(-3px); }
+    .stat-icon { font-size:2rem; width:56px; height:56px; border-radius:14px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .stat-icon.green  { background:#dcfce7; }
+    .stat-icon.blue   { background:#dbeafe; }
+    .stat-icon.purple { background:#ede9fe; }
+    .stat-icon.orange { background:#ffedd5; }
+    .stat-num  { font-size:1.7rem; font-weight:800; color:var(--ink); line-height:1; }
+    .stat-label{ font-size:.8rem; color:var(--muted); font-weight:600; text-transform:uppercase; letter-spacing:.5px; margin-top:.2rem; }
+
+    /* Nav pills */
+    .admin-nav { background:#fff; border-radius:16px; box-shadow:0 4px 20px rgba(10,37,64,.06); padding:1rem 1.5rem; margin-bottom:2rem; display:flex; gap:.5rem; flex-wrap:wrap; }
+    .admin-nav a { padding:.5rem 1.2rem; border-radius:50px; font-weight:600; font-size:.88rem; text-decoration:none; color:var(--muted); transition:all .2s; }
+    .admin-nav a:hover, .admin-nav a.active { background:var(--brand); color:#fff; }
+
+    /* Recent bookings table */
+    .admin-card { background:#fff; border-radius:16px; box-shadow:0 4px 20px rgba(10,37,64,.08); overflow:hidden; }
+    .admin-card-header { padding:1.25rem 1.5rem; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; }
+    .admin-card-header h5 { font-weight:700; margin:0; color:var(--ink); }
+    .admin-table { width:100%; border-collapse:collapse; }
+    .admin-table th { font-size:.72rem; font-weight:700; letter-spacing:.7px; text-transform:uppercase; color:var(--muted); padding:.9rem 1.25rem; border-bottom:1px solid var(--border); background:#fafbfc; }
+    .admin-table td { padding:.9rem 1.25rem; border-bottom:1px solid var(--border); font-size:.9rem; color:var(--ink); vertical-align:middle; }
+    .admin-table tr:last-child td { border-bottom:none; }
+    .admin-table tr:hover td { background:#f8fafc; }
+
+    .badge-confirmed { background:#dcfce7; color:#15803d; padding:.2rem .7rem; border-radius:50px; font-size:.72rem; font-weight:700; }
+    .badge-initiated  { background:#fef9c3; color:#92400e; padding:.2rem .7rem; border-radius:50px; font-size:.72rem; font-weight:700; }
+    .badge-cancelled  { background:#fee2e2; color:#b91c1c; padding:.2rem .7rem; border-radius:50px; font-size:.72rem; font-weight:700; }
+</style>
+
+<!-- Header -->
+<div class="admin-header">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <div>
+                <h2>🛡️ Admin Dashboard</h2>
+                <p>Welcome back, Admin. Here's what's happening.</p>
+            </div>
+            <a asp-controller="Home" asp-action="Index"
+               style="background:rgba(255,255,255,.15);color:#fff;border:1px solid rgba(255,255,255,.3);padding:.5rem 1.25rem;border-radius:50px;text-decoration:none;font-weight:600;font-size:.88rem;">
+                🏠 Back to Site
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container pb-5">
+
+    <!-- Nav -->
+    <div class="admin-nav">
+        <a asp-controller="Admin" asp-action="Index" class="active">📊 Dashboard</a>
+        <a asp-controller="Admin" asp-action="Trips">🚢 Trips</a>
+        <a asp-controller="Admin" asp-action="Bookings">🎫 Bookings</a>
+        <a asp-controller="Admin" asp-action="Itinerary">🗺️ Itinerary</a>
+        <a asp-controller="Admin" asp-action="Users">👥 Users</a>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success rounded-3 mb-4">✅ @TempData["Success"]</div>
+    }
+
+    <!-- Stat Cards -->
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-md-3">
+            <div class="stat-card">
+                <div class="stat-icon green">🚢</div>
+                <div>
+                    <div class="stat-num">@ViewBag.TotalTrips</div>
+                    <div class="stat-label">Total Trips</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-left-color:#3b82f6;">
+                <div class="stat-icon blue">👥</div>
+                <div>
+                    <div class="stat-num">@ViewBag.TotalUsers</div>
+                    <div class="stat-label">Total Users</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-left-color:#8b5cf6;">
+                <div class="stat-icon purple">🎫</div>
+                <div>
+                    <div class="stat-num">@ViewBag.TotalBookings</div>
+                    <div class="stat-label">Total Bookings</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="stat-card" style="border-left-color:#f97316;">
+                <div class="stat-icon orange">💰</div>
+                <div>
+                    <div class="stat-num" style="font-size:1.3rem;">₹@(((decimal)ViewBag.TotalRevenue).ToString("N0"))</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Bookings -->
+    <div class="admin-card">
+        <div class="admin-card-header">
+            <h5>🕐 Recent Bookings</h5>
+            <a asp-controller="Admin" asp-action="Bookings" style="font-size:.85rem;color:var(--brand);font-weight:600;text-decoration:none;">View all →</a>
+        </div>
+        @if (recentBookings.Count == 0)
+        {
+            <div class="text-center py-5 text-muted">No bookings yet</div>
+        }
+        else
+        {
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Reference</th>
+                        <th>Journey</th>
+                        <th>User</th>
+                        <th>Date</th>
+                        <th>Fare</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in recentBookings)
+                    {
+                        <tr>
+                            <td><span style="font-family:monospace;font-size:.8rem;">@b.BookingReference[..8]...</span></td>
+                            <td>@(b.JourneyName ?? "—")</td>
+                            <td>@(b.UserId ?? "—")</td>
+                            <td>@b.BookingDate.ToString("dd MMM yyyy")</td>
+                            <td>₹@b.TotalFare.ToString("N0")</td>
+                            <td>
+                                var statusClass = b.Status switch {
+                                0 => "confirmed",
+                                1 => "cancelled",
+                                _ => "initiated"
+                                };
+                                var statusText = b.Status switch {
+                                0 => "Confirmed",
+                                1 => "Cancelled",
+                                _ => "Initiated"
+                                };
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+
+</div>

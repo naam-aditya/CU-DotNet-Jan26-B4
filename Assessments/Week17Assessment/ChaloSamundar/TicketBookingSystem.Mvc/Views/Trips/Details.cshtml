@@ -1,0 +1,544 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.TripViewModel
+@{
+    ViewData["Title"] = Model.Heading;
+    
+    // Fallback image if your model doesn't have an ImageUrl property yet.
+    // If it does, you can swap this with @Model.ImageUrl
+    var heroImageUrl = "https://images.unsplash.com/photo-1599640842225-85d111c60e6b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80"; 
+}
+
+<style>
+    body { background: #f7f8fa; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+
+    .trip-detail-wrap { padding: 1.5rem 0 4rem; }
+
+    /* ---- BUTTONS & UTILS ---- */
+    .btn-back { 
+        border: none; background: transparent; color: #6b7280; font-weight: 600;
+        padding: 0; margin-bottom: 1.25rem; text-decoration: none; display: inline-block; transition: color 0.2s;
+    }
+    .btn-back:hover { color: #32B096; }
+    
+    .tag-pill {
+        display: inline-block; border: 1px solid #32B096; color: #32B096; background: rgba(50, 176, 150, 0.08);
+        padding: .25rem .85rem; border-radius: 999px; font-size: .8rem;
+        margin-right: .4rem; margin-bottom: .5rem; font-weight: 600;
+    }
+
+    /* ---- LAYOUT CARDS ---- */
+    .main-card {
+        background: #fff; border: 1px solid #eceef2; border-radius: 16px;
+        overflow: hidden; margin-bottom: 1.5rem;
+        box-shadow: 0 4px 12px rgba(17, 24, 39, 0.02);
+    }
+    
+    .booking-sidebar {
+        background: #fff; border: 1px solid #eceef2; border-radius: 16px;
+        padding: 1.5rem; position: sticky; top: 1.5rem;
+        box-shadow: 0 10px 30px rgba(17, 24, 39, 0.04);
+    }
+
+    /* ---- HERO IMAGE ---- */
+    .hero-banner {
+        position: relative; width: 100%; height: 320px;
+        background-size: cover; background-position: center;
+    }
+    .hero-banner::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(10,37,64,0) 40%, rgba(10,37,64,.8) 100%);
+    }
+    .hero-content {
+        position: absolute; bottom: 0; left: 0; right: 0;
+        padding: 2rem; z-index: 2; color: #fff;
+    }
+    .hero-content h1 { font-size: 2.2rem; font-weight: 800; margin: 0 0 .5rem; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+    .hero-route { display: flex; align-items: center; gap: .5rem; font-weight: 500; font-size: 1.05rem; opacity: 0.95; }
+    .hero-route .arrow { color: rgba(255,255,255,0.6); }
+
+    /* ---- CONTENT AREA ---- */
+    .content-body { padding: 2rem; }
+
+    /* ---- TABS ---- */
+    .custom-tabs {
+        display: flex; gap: 2rem; border-bottom: 1px solid #eceef2; margin-bottom: 2rem;
+    }
+    .custom-tab {
+        padding: .85rem 0; cursor: pointer; font-weight: 600; color: #6b7280;
+        position: relative; font-size: 1.05rem; transition: color 0.2s;
+    }
+    .custom-tab:hover { color: #111827; }
+    .custom-tab.active { color: #32B096; }
+    .custom-tab.active::after {
+        content: ''; position: absolute; bottom: -1px; left: 0; right: 0;
+        height: 3px; background: #32B096; border-radius: 3px 3px 0 0;
+    }
+
+    /* ---- OVERVIEW GRID ---- */
+    .overview-grid {
+        display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;
+    }
+    .overview-item {
+        background: #f8fafc; padding: 1.25rem; border-radius: 12px; border: 1px solid #f1f5f9;
+    }
+    .overview-item span { display: block; color: #6b7280; font-size: .85rem; font-weight: 600; margin-bottom: .25rem; text-transform: uppercase; letter-spacing: 0.5px;}
+    .overview-item strong { color: #111827; font-size: 1.1rem; font-weight: 700; }
+
+    /* ---- TIMELINE ---- */
+    .timeline { position: relative; padding-left: 32px; margin-top: 1rem; }
+    .timeline::before {
+        content: ""; position: absolute; left: 9px; top: 8px; bottom: 0; width: 2px; background: #e3e5ea;
+    }
+    .timeline-item { position: relative; margin-bottom: 1.5rem; }
+    .timeline-dot {
+        position: absolute; left: -31px; top: 4px; width: 18px; height: 18px;
+        border-radius: 50%; border: 4px solid #fff; box-shadow: 0 0 0 1px #e3e5ea;
+        z-index: 2;
+    }
+    .timeline-dot.port { background: #32B096; }
+    .timeline-dot.sea { background: #10b981; }
+    
+    .timeline-card {
+        background: #fff; padding: 1.25rem; border-radius: 12px;
+        border: 1px solid #eceef2; transition: all .2s ease;
+    }
+    .timeline-card:hover { border-color: #d1d5db; box-shadow: 0 8px 20px rgba(17,24,39,.05); transform: translateY(-2px); }
+    .timeline-card h6 { margin: 0 0 .35rem; font-weight: 700; color: #111827; font-size: 1.05rem; }
+    .timeline-card .date { color: #6b7280; font-size: .9rem; font-weight: 500; }
+
+    /* ---- MAP ---- */
+    .map-box { height: 400px; border-radius: 12px; border: 1px solid #eceef2; z-index: 1; }
+
+    /* ---- SIDEBAR CTA ---- */
+    .rating-badge { display: inline-block; padding: .35rem .65rem; border-radius: 8px; font-weight: 700; font-size: .9rem; background: #d1fae5; color: #065f46; }
+    .price-wrap { margin: 1.5rem 0; padding-bottom: 1.5rem; border-bottom: 1px solid #eceef2; }
+    .price-amount { font-size: 2.2rem; font-weight: 800; color: #111827; line-height: 1; }
+    .price-sub { color: #6b7280; font-size: .95rem; margin-top: .4rem; font-weight: 500; }
+    
+    .btn-book {
+        background: #32B096; color: #fff; border: none; font-size: 1.05rem;
+        border-radius: 10px; font-weight: 700; padding: .85rem 1rem; width: 100%; transition: background 0.2s;
+        text-align: center; display: block; text-decoration: none;
+    }
+    .btn-book:hover { background: #279078; color: #fff; }
+
+    .summary-list { list-style: none; padding: 0; margin: 1.5rem 0 0; }
+    .summary-list li { display: flex; align-items: center; gap: .75rem; color: #4b5563; margin-bottom: .85rem; font-size: .95rem; }
+
+    @@media(max-width:991px) {
+        .overview-grid { grid-template-columns: 1fr; }
+        .hero-banner { height: 260px; }
+        .hero-content h1 { font-size: 1.8rem; }
+    }
+</style>
+
+<div class="trip-detail-wrap">
+    <div class="container">
+        
+        <a asp-controller="Trips" asp-action="Index" class="btn-back">← Back to search results</a>
+
+        <div class="row g-4">
+            
+            <div class="col-lg-8">
+                <div class="main-card">
+                    <div class="hero-banner" style="background-image:url('@heroImageUrl')">
+                        <div class="hero-content">
+                            <h1>@Model.Heading</h1>
+                            <div class="hero-route">
+                                @for (int i = 0; i < Model.Ports.Length; i++)
+                                {
+                                    <span>@Model.Ports[i]</span>
+                                    if (i < Model.Ports.Length - 1)
+                                    {
+                                        <span class="arrow">→</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-body">
+                        <div class="custom-tabs">
+                            <div class="custom-tab active" onclick="showTab('overview', this)">Overview</div>
+                            <div class="custom-tab" onclick="showTab('itinerary', this)">Itinerary & Map</div>
+                        </div>
+
+                        <div id="overview" class="tab-pane">
+                            <div class="mb-4">
+                                <span class="tag-pill">#Premium Experience</span>
+                                <span class="tag-pill">#Top Rated Cruise</span>
+                                <span class="tag-pill">#All Inclusive</span>
+                            </div>
+
+                            <p style="color: #4b5563; font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem;">
+                                Prepare for an unforgettable journey. Enjoy a premium cruise experience featuring world-class amenities, nightly entertainment, exquisite dining, and carefully curated destinations designed to give you memories that will last a lifetime.
+                            </p>
+
+                            <div class="overview-grid">
+                                <div class="overview-item">
+                                    <span>Travel Dates</span>
+                                    <strong>@Model.StartDate.ToString("MMM d") - @Model.EndDate.ToString("MMM d, yyyy")</strong>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Duration</span>
+                                    <strong>@Model.Nights Nights / @(Model.Nights + 1) Days</strong>
+                                </div>
+                                <div class="overview-item">
+                                    <span>Ports of Call</span>
+                                    <strong>@Model.Ports.Length Destinations</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="itinerary" class="tab-pane" style="display:none;">
+                            <h4 class="fw-bold mb-4">Journey Map</h4>
+                            <div id="map" class="map-box mb-5"></div>
+
+                            <h4 class="fw-bold mb-4">Day-by-Day Itinerary</h4>
+                            <div class="timeline">
+                                @foreach (var d in Model.Itinerary.OrderBy(x => x.DayNumber))
+                                {
+                                    <div class="timeline-item">
+                                        <div class="timeline-dot @(d.IsAtSea ? "sea" : "port")"></div>
+
+                                        <div class="timeline-card">
+                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                <h6>Day @d.DayNumber: @(d.IsAtSea ? "Cruising" : d.Location)</h6>
+                                                <span class="date">@d.Date.ToString("MMM d, yyyy")</span>
+                                            </div>
+                                            <div class="text-muted small">
+                                                @(d.IsAtSea ? "🌊 Enjoy a relaxing day exploring the ship's amenities and entertainment at sea." : $"📍 Docked in {d.Location}. Prepare for shore excursions and local sightseeing.")
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="booking-sidebar">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="fw-bold text-dark" style="font-size: 1.1rem;">Guest Rating</span>
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="fw-bold text-success">Excellent</span>
+                            <span class="rating-badge">9.6</span>
+                        </div>
+                    </div>
+
+                    <div class="price-wrap">
+                        <div class="price-amount">₹@Model.Price.ToString("N0")</div>
+                        <div class="price-sub">Total price for @Model.Nights nights</div>
+                    </div>
+
+                    <a asp-controller="Cabin" 
+                       asp-action="Index" 
+                       asp-route-tripId="@Model.Id" 
+                       class="btn-book">
+                        Book This Trip
+                    </a>
+
+                    <ul class="summary-list">
+                        <li><span style="font-size: 1.2rem;">✅</span> Free cancellation within 48 hours</li>
+                        <li><span style="font-size: 1.2rem;">🍽️</span> All meals included onboard</li>
+                        <li><span style="font-size: 1.2rem;">⚓</span> Embarkation: @(Model.Ports.FirstOrDefault() ?? "TBA")</li>
+                        <li><span style="font-size: 1.2rem;">🛳️</span> Disembarkation: @(Model.Ports.LastOrDefault() ?? "TBA")</li>
+                    </ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+    function showTab(tabId, element) {
+        // Hide all panes
+        document.querySelectorAll('.tab-pane').forEach(x => x.style.display = 'none');
+        document.getElementById(tabId).style.display = 'block';
+
+        // Update active tab styling
+        document.querySelectorAll('.custom-tab').forEach(x => x.classList.remove('active'));
+        element.classList.add('active');
+
+        // Init map if Itinerary is clicked
+        if(tabId === 'itinerary'){
+            setTimeout(initMap, 200);
+        }
+    }
+
+    // Port coords + offshore waypoint (already out in the sea for each city)
+    // SL ports offshores pushed further out so smoothed curves never clip the island.
+    const COORDS = {
+        "Mumbai":      { port: [19.0760, 72.8777], offshore: [18.95, 71.80], coast: "west_IN" },
+        "Goa":         { port: [15.2993, 74.1240], offshore: [15.35, 73.00], coast: "west_IN" },
+        "Mangalore":   { port: [12.9141, 74.8560], offshore: [12.90, 73.70], coast: "west_IN" },
+        "Kochi":       { port: [9.9312, 76.2673],  offshore: [9.93,  75.10], coast: "west_IN" },
+        "Diu":         { port: [20.7140, 70.9870], offshore: [20.30, 70.20], coast: "west_IN" },
+        "Chennai":     { port: [13.0827, 80.2707], offshore: [13.05, 81.40], coast: "east_IN" },
+        "Trincomalee": { port: [8.5874, 81.2152],  offshore: [8.60,  82.80], coast: "lanka_east" },
+        "Colombo":     { port: [6.9271, 79.8612],  offshore: [6.90,  78.80], coast: "lanka_west" },
+        "Galle":       { port: [6.0320, 80.2168],  offshore: [5.10,  80.20], coast: "lanka_south" },
+        "Hambantota":  { port: [6.1246, 81.1185],  offshore: [5.20,  81.20], coast: "lanka_south" },
+        "Male":        { port: [4.1755, 73.5093],  offshore: [4.20,  72.80], coast: "islands" },
+        "Baa Atoll":   { port: [5.1700, 72.9500],  offshore: [5.20,  72.30], coast: "islands" },
+        "Agatti":      { port: [10.8500, 72.1950], offshore: [10.85, 71.50], coast: "islands" },
+        "Kavaratti":   { port: [10.5670, 72.6420], offshore: [10.57, 71.90], coast: "islands" },
+        "Minicoy":     { port: [8.2900, 73.0400],  offshore: [8.30,  72.30], coast: "islands" }
+    };
+
+    // Sea waypoints for legs that must route AROUND landmasses.
+    // Order listed = traversal order in the alpha-sorted direction of the key.
+    // If the actual trip goes the opposite way, the array is reversed at runtime.
+    // Core sea pivots (named constants for clarity)
+    //   OFF_K   = west of Trivandrum / Kerala coast
+    //   S_K     = south-west of Kanyakumari
+    //   S_OF_K  = directly south of Cape Comorin
+    //   SW_SL   = south-west of Sri Lanka (near Colombo's south)
+    //   S_SL    = south of Sri Lanka
+    //   SE_SL   = south-east of Sri Lanka
+    //   E_SL    = east of Sri Lanka (mid)
+    //   NE_SL   = east of Jaffna (clears Palk Strait)
+    // Perimeter waypoints pushed well offshore (83+ lng east of SL, <80 lng south of SL, etc.)
+    // so Catmull-Rom smoothing can't pull the curve onto land.
+    const SEA_WP = {
+        // West India <-> East India: down Kerala, round Cape Comorin, around south of Sri Lanka, up east
+        'east_IN|west_IN':         [[11.50, 83.20], [6.50, 83.20], [4.80, 81.50], [5.00, 79.00], [6.50, 77.50], [8.00, 75.80]],
+        'lanka_east|west_IN':      [[6.50, 83.20], [4.80, 81.50], [5.00, 79.00], [6.50, 77.50], [8.00, 75.80]],
+        'lanka_south|west_IN':     [[5.00, 79.00], [6.50, 77.50], [8.00, 75.80]],
+        'lanka_west|west_IN':      [[7.50, 76.80], [8.50, 75.80]],
+
+        // East India <-> Sri Lanka — all perimeter routes swing far east of SL
+        'east_IN|lanka_east':      [[11.50, 83.20]],
+        'east_IN|lanka_south':     [[11.50, 83.20], [6.50, 83.20]],
+        'east_IN|lanka_west':      [[11.50, 83.20], [6.50, 83.20], [4.80, 81.50], [5.00, 79.00]],
+
+        // Within Sri Lanka (always route AROUND the island)
+        'lanka_east|lanka_south':  [[6.50, 83.20], [4.80, 81.50]],
+        'lanka_east|lanka_west':   [[6.50, 83.20], [4.80, 81.50], [5.00, 79.00]],
+        'lanka_south|lanka_west':  [[5.50, 79.30]],
+
+        // Islands <-> mainland / Sri Lanka
+        'east_IN|islands':         [[11.50, 83.20], [6.50, 83.20], [4.80, 81.50], [5.00, 79.00], [6.50, 77.50]],
+        'islands|lanka_east':      [[7.50, 76.80], [6.50, 77.50], [5.00, 79.00], [6.50, 83.20]],
+        'islands|lanka_south':     [[7.50, 76.80], [6.50, 77.50]],
+        'islands|lanka_west':      [[7.50, 76.80]]
+    };
+
+    function getIntermediates(a, b) {
+        if (!a.coast || !b.coast || a.coast === b.coast) return [];
+        const sorted = [a.coast, b.coast].sort();
+        const wp = SEA_WP[sorted.join('|')];
+        if (!wp) return [];
+        return a.coast === sorted[0] ? [...wp] : [...wp].reverse();
+    }
+
+    // Direction to nudge a leg toward open sea (for same-coast legs that would otherwise be straight)
+    const BULGE_DIR = {
+        west_IN:     [ 0.00, -0.80 ],   // further west
+        east_IN:     [ 0.00,  0.80 ],   // further east
+        lanka_east:  [ 0.00,  0.60 ],
+        lanka_west:  [ 0.00, -0.60 ],
+        lanka_south: [ -0.60, 0.00 ],   // further south
+        islands:     [ 0.00, -0.60 ]
+    };
+
+    // Centripetal Catmull-Rom (alpha=0.5) — smooth curves through waypoints, no overshoots.
+    function smoothPath(points, segments = 18, alpha = 0.5) {
+        if (points.length < 2) return points;
+        if (points.length === 2) return points;
+
+        const dist = (a, b) => {
+            const dlat = b[0] - a[0], dlng = b[1] - a[1];
+            return Math.pow(dlat * dlat + dlng * dlng, alpha * 0.5);
+        };
+
+        const pts = [points[0], ...points, points[points.length - 1]];
+        const out = [];
+
+        for (let i = 0; i < pts.length - 3; i++) {
+            const p0 = pts[i], p1 = pts[i + 1], p2 = pts[i + 2], p3 = pts[i + 3];
+            const t0 = 0;
+            const t1 = t0 + Math.max(dist(p0, p1), 1e-6);
+            const t2 = t1 + Math.max(dist(p1, p2), 1e-6);
+            const t3 = t2 + Math.max(dist(p2, p3), 1e-6);
+
+            for (let j = 0; j < segments; j++) {
+                const t = t1 + (j / segments) * (t2 - t1);
+
+                const a1 = lerp(p0, p1, (t - t0) / (t1 - t0));
+                const a2 = lerp(p1, p2, (t - t1) / (t2 - t1));
+                const a3 = lerp(p2, p3, (t - t2) / (t3 - t2));
+
+                const b1 = lerp(a1, a2, (t - t0) / (t2 - t0));
+                const b2 = lerp(a2, a3, (t - t1) / (t3 - t1));
+
+                out.push(lerp(b1, b2, (t - t1) / (t2 - t1)));
+            }
+        }
+        out.push(points[points.length - 1]);
+        return out;
+    }
+    function lerp(a, b, t) { return [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t]; }
+
+    // --- math helpers ---
+    function bearingDeg(a, b) {
+        const toRad = d => d * Math.PI / 180;
+        const [lat1, lon1] = [toRad(a[0]), toRad(a[1])];
+        const [lat2, lon2] = [toRad(b[0]), toRad(b[1])];
+        const dLon = lon2 - lon1;
+        const y = Math.sin(dLon) * Math.cos(lat2);
+        const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLon);
+        return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+    }
+
+    // Quadratic bezier: p0 -> ctrl -> p1, sampled into `steps` lat-lng points
+    function bezierArc(p0, ctrl, p1, steps = 40) {
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+            const t = i / steps, u = 1 - t;
+            pts.push([
+                u * u * p0[0] + 2 * u * t * ctrl[0] + t * t * p1[0],
+                u * u * p0[1] + 2 * u * t * ctrl[1] + t * t * p1[1]
+            ]);
+        }
+        return pts;
+    }
+
+    // --- icons ---
+    function portMarker(name, color) {
+        return L.marker([0, 0]).bindTooltip(name, { permanent: true, direction: 'right', offset: [10, 0], className: 'port-label' });
+    }
+
+    const portDot = color => L.divIcon({
+        className: '',
+        html: `<div style="width:16px;height:16px;background:${color};border:3px solid #fff;border-radius:50%;box-shadow:0 0 0 1px ${color},0 2px 6px rgba(0,0,0,.3);"></div>`,
+        iconSize: [22, 22],
+        iconAnchor: [11, 11]
+    });
+
+    const arrowIcon = (deg, color) => L.divIcon({
+        className: '',
+        html: `<div style="transform: rotate(${deg}deg); width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
+                   <svg viewBox="0 0 24 24" width="22" height="22" style="color:${color}; filter: drop-shadow(0 1px 2px rgba(0,0,0,.35));">
+                       <path fill="currentColor" d="M12 2 L20 22 L12 17 L4 22 Z"/>
+                   </svg>
+               </div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+    });
+
+    // For round-trip return leg: push waypoints further south/out so the return arc is visibly separate
+    function shiftForReturn(pt) {
+        return [pt[0] - 0.5, pt[1] + (pt[1] > 77 ? 0.4 : -0.4)];  // nudge away from coast
+    }
+
+    function initMap() {
+        if (window.mapLoaded) return;
+
+        const map = L.map('map', { scrollWheelZoom: false }).setView([10, 77], 5);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap'
+        }).addTo(map);
+
+        // Port label style (injected once)
+        if (!document.getElementById('port-label-style')) {
+            const styleEl = document.createElement('style');
+            styleEl.id = 'port-label-style';
+            styleEl.textContent = `
+                .port-label { background:#fff; border:1px solid #e2e8f0; border-radius:8px; padding:3px 10px; font-weight:600; font-size:12px; color:#0f172a; box-shadow:0 2px 6px rgba(0,0,0,.1); }
+                .port-label::before { display:none !important; }
+            `;
+            document.head.appendChild(styleEl);
+        }
+
+        const ports = [
+        @foreach (var p in Model.Ports)
+        {
+            @: "@p",
+        }
+        ];
+
+        const resolved = ports.map(p => ({ name: p, ...(COORDS[p] || {}) }))
+                              .filter(x => x.port && x.offshore);
+
+        if (resolved.length < 2) { window.mapLoaded = true; return; }
+
+        const isRound = resolved.length > 2 && resolved[0].name === resolved[resolved.length - 1].name;
+        const BRAND = '#32B096';
+
+        // Unique port markers + labels
+        const seen = new Set();
+        resolved.forEach(p => {
+            if (seen.has(p.name)) return;
+            seen.add(p.name);
+            L.marker(p.port, { icon: portDot(BRAND) })
+                .addTo(map)
+                .bindTooltip(p.name, { permanent: true, direction: 'right', offset: [12, 0], className: 'port-label' });
+        });
+
+        // Build each leg's polyline. For same-coast legs with no intermediates, insert a
+        // midway bulge point (pushed towards open sea) so the line curves instead of going
+        // straight. Then feed everything through a Catmull-Rom spline for smooth arcs.
+        const legs = [];
+        const midIdx = Math.floor(resolved.length / 2);
+
+        for (let i = 0; i < resolved.length - 1; i++) {
+            const a = resolved[i], b = resolved[i + 1];
+            const isReturn = isRound && i >= midIdx;
+
+            const intermediates = getIntermediates(a, b);
+            let seaPts = [a.offshore, ...intermediates, b.offshore];
+
+            // Same coast, no intermediates → inject one bulge waypoint for a gentle curve
+            if (intermediates.length === 0 && a.coast === b.coast) {
+                const bulge = BULGE_DIR[a.coast] || [0, 0];
+                const mid = [
+                    (a.offshore[0] + b.offshore[0]) / 2 + bulge[0],
+                    (a.offshore[1] + b.offshore[1]) / 2 + bulge[1]
+                ];
+                seaPts = [a.offshore, mid, b.offshore];
+            }
+
+            if (isReturn) seaPts = seaPts.map(shiftForReturn);
+
+            // Full path: port -> offshore(curve in sea) -> port. Bookending by actual ports
+            // ensures the line visibly connects to the port marker at both ends.
+            const fullPath = [a.port, ...seaPts, b.port];
+            const smooth = smoothPath(fullPath, 22);
+
+            // Arrow at the middle of the smoothed curve
+            const midI = Math.floor(smooth.length / 2);
+            const dir = bearingDeg(smooth[Math.max(0, midI - 1)], smooth[Math.min(smooth.length - 1, midI + 1)]);
+
+            legs.push({ path: smooth, arrPos: smooth[midI], dir, isReturn });
+        }
+
+        // Draw smoothed polylines
+        legs.forEach(leg => {
+            L.polyline(leg.path, {
+                color: BRAND,
+                weight: 3.5,
+                opacity: leg.isReturn ? 0.55 : 0.95,
+                dashArray: leg.isReturn ? '7,7' : null,
+                lineCap: 'round',
+                lineJoin: 'round',
+                smoothFactor: 1
+            }).addTo(map);
+
+            L.marker(leg.arrPos, { icon: arrowIcon(leg.dir, BRAND) }).addTo(map);
+        });
+
+        // Fit bounds to everything drawn (include port points so labels show)
+        const allPts = legs.flatMap(l => l.path).concat(resolved.map(r => r.port));
+        map.fitBounds(allPts, { padding: [50, 50] });
+
+        window.mapLoaded = true;
+        setTimeout(() => map.invalidateSize(), 300);
+    }
+</script>

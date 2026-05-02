@@ -1,0 +1,478 @@
+﻿@model TicketBookingSystem.Mvc.ViewModels.UserProfileViewModel
+
+@{
+    ViewData["Title"] = "My Profile";
+    bool isEditMode = ViewBag.EditMode == true || !Model.IsSaved;
+
+    var nameParts = (Model.FullName ?? "").Split(' ', StringSplitOptions.RemoveEmptyEntries);
+    var initials = nameParts.Length >= 2
+        ? $"{nameParts[0][0]}{nameParts[1][0]}".ToUpper()
+        : nameParts.Length == 1 ? nameParts[0][0].ToString().ToUpper() : "U";
+
+    var dobDisplay = Model.DateOfBirth.HasValue
+        ? Model.DateOfBirth.Value.ToString("dd MMM yyyy") : null;
+}
+
+<style>
+    :root {
+        --brand: #32B096;
+        --brand-dark: #279078;
+        --ink: #0f172a;
+        --muted: #64748b;
+        --surface: #f8fafc;
+        --border: #e2e8f0;
+    }
+
+    .profile-page {
+        min-height: 100vh;
+        background: var(--surface);
+        padding: 3rem 0 5rem;
+    }
+
+    /* Header */
+    .profile-header {
+        background: linear-gradient(135deg,var(--brand),var(--brand-dark));
+        color: #fff;
+        padding: 2.5rem 0 5rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .profile-header::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='30' cy='30' r='28' stroke='%23ffffff' stroke-width='.4' fill='none'/%3E%3C/svg%3E") repeat;
+            opacity: .12;
+        }
+
+        .profile-header .inner {
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-header h2 {
+            font-weight: 800;
+            letter-spacing: -.5px;
+        }
+
+    .avatar-wrap {
+        width: 88px;
+        height: 88px;
+        border-radius: 50%;
+        background: rgba(255,255,255,.25);
+        border: 3px solid rgba(255,255,255,.6);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.2rem;
+        font-weight: 800;
+        color: #fff;
+        flex-shrink: 0;
+    }
+
+    /* Card */
+    .profile-card {
+        background: #fff;
+        border-radius: 20px;
+        box-shadow: 0 20px 60px rgba(10,37,64,.10);
+        padding: 2.5rem 2.5rem 2rem;
+        margin-top: -3.5rem;
+        position: relative;
+        z-index: 5;
+    }
+
+    .section-label {
+        font-size: .7rem;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--brand);
+        margin-bottom: 1.25rem;
+        padding-bottom: .5rem;
+        border-bottom: 2px solid #e6f7f3;
+    }
+
+    /* Inputs (edit mode) */
+    .profile-card .form-label {
+        font-size: .78rem;
+        font-weight: 600;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: .6px;
+        margin-bottom: .4rem;
+    }
+
+    .profile-card .form-control {
+        border: 1.5px solid var(--border);
+        border-radius: 12px;
+        padding: .75rem 1rem;
+        font-size: .95rem;
+        transition: all .2s;
+        background: #fafbfc;
+    }
+
+        .profile-card .form-control:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(50,176,150,.15);
+            background: #fff;
+        }
+
+    /* Gender pills */
+    .gender-group {
+        display: flex;
+        gap: .75rem;
+        flex-wrap: wrap;
+    }
+
+        .gender-group input[type="radio"] {
+            display: none;
+        }
+
+        .gender-group label {
+            flex: 1;
+            min-width: 90px;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: .65rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: .9rem;
+            color: var(--muted);
+            transition: all .2s;
+            background: #fafbfc;
+        }
+
+        .gender-group input[type="radio"]:checked + label {
+            border-color: var(--brand);
+            background: linear-gradient(135deg,#e6f7f3,#d4f4ea);
+            color: var(--brand-dark);
+        }
+
+        .gender-group label:hover {
+            border-color: var(--brand);
+        }
+
+    /* View mode: info grid */
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0;
+    }
+
+    .info-field {
+        padding: 1.1rem 0;
+        border-bottom: 1px solid var(--border);
+        padding-right: 2rem;
+    }
+
+        .info-field:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+
+    .field-label {
+        font-size: .72rem;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: .35rem;
+    }
+
+    .field-value {
+        font-size: .97rem;
+        font-weight: 600;
+        color: var(--ink);
+    }
+
+        .field-value.empty {
+            color: #cbd5e1;
+            font-style: italic;
+            font-weight: 400;
+        }
+
+    /* Buttons */
+    .btn-save {
+        background: linear-gradient(135deg,var(--brand),var(--brand-dark));
+        color: #fff;
+        border: none;
+        padding: .9rem 2.5rem;
+        border-radius: 14px;
+        font-weight: 700;
+        font-size: 1rem;
+        transition: all .2s;
+    }
+
+        .btn-save:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 28px rgba(50,176,150,.35);
+            color: #fff;
+        }
+
+    .btn-edit {
+        background: #fff;
+        color: var(--brand);
+        border: 2px solid var(--brand);
+        padding: .6rem 1.8rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: .9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        text-decoration: none;
+        transition: all .2s;
+    }
+
+        .btn-edit:hover {
+            background: var(--brand);
+            color: #fff;
+        }
+
+    .btn-delete {
+        background: none;
+        border: none;
+        color: #ef4444;
+        font-weight: 600;
+        font-size: .9rem;
+        display: inline-flex;
+        align-items: center;
+        gap: .4rem;
+        padding: .6rem .5rem;
+        cursor: pointer;
+        transition: color .2s;
+    }
+
+        .btn-delete:hover {
+            color: #b91c1c;
+        }
+
+    /* Toast */
+    .toast-success {
+        position: fixed;
+        bottom: 1.5rem;
+        right: 1.5rem;
+        background: #fff;
+        border-left: 4px solid var(--brand);
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(10,37,64,.12);
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+        gap: .75rem;
+        z-index: 9999;
+        animation: slideIn .35s ease;
+        min-width: 260px;
+    }
+
+        .toast-success .msg {
+            font-weight: 600;
+            color: var(--ink);
+            font-size: .95rem;
+        }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateY(60px);
+            opacity: 0
+        }
+
+        to {
+            transform: translateY(0);
+            opacity: 1
+        }
+    }
+
+    @@media(max-width:576px) {
+        .profile-card {
+            padding: 1.5rem 1.25rem
+        }
+
+        .info-grid {
+            grid-template-columns: 1fr
+        }
+
+        .profile-header {
+            padding: 2rem 0 4rem
+        }
+    }
+</style>
+
+<!-- Header -->
+<div class="profile-header">
+    <div class="container inner">
+        <div class="d-flex align-items-center gap-3">
+            <div class="avatar-wrap">@initials</div>
+            <div>
+                <h2 class="mb-0">My Profile</h2>
+                <p class="mb-0 mt-1 opacity-75">
+                    @(string.IsNullOrWhiteSpace(Model.FullName) ? "Tell us about yourself" : $"Welcome, {nameParts[0]}!")
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Card -->
+<div class="profile-page pt-0">
+    <div class="container">
+        <div class="profile-card">
+
+            @if (TempData["Success"] != null)
+            {
+                <div class="toast-success" id="successToast">
+                    <span>✅</span>
+                    <span class="msg">@TempData["Success"]</span>
+                </div>
+            }
+
+            @* ── VIEW MODE ── *@
+            @if (!isEditMode)
+            {
+                <p class="section-label">Personal Details</p>
+                <div class="info-grid mb-4">
+                    <div class="info-field">
+                        <div class="field-label">Full Name</div>
+                        <div class="field-value @(string.IsNullOrWhiteSpace(Model.FullName) ? "empty" : "")">
+                            @(string.IsNullOrWhiteSpace(Model.FullName) ? "—" : Model.FullName)
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Date of Birth</div>
+                        <div class="field-value @(dobDisplay == null ? "empty" : "")">
+                            @(dobDisplay ?? "—")
+                            @if (Model.Age.HasValue)
+                            {
+                                <span class="text-muted fw-normal" style="font-size:.85rem"> · @Model.Age yrs</span>
+                            }
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Gender</div>
+                        <div class="field-value @(string.IsNullOrWhiteSpace(Model.Gender) ? "empty" : "")">
+                            @(string.IsNullOrWhiteSpace(Model.Gender) ? "—" : Model.Gender)
+                        </div>
+                    </div>
+                </div>
+
+                <p class="section-label">Contact Details</p>
+                <div class="info-grid mb-4">
+                    <div class="info-field">
+                        <div class="field-label">Email Address</div>
+                        <div class="field-value @(string.IsNullOrWhiteSpace(Model.Email) ? "empty" : "")">
+                            @(string.IsNullOrWhiteSpace(Model.Email) ? "—" : Model.Email)
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">Phone Number</div>
+                        <div class="field-value @(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "empty" : "")">
+                            @(string.IsNullOrWhiteSpace(Model.PhoneNumber) ? "—" : Model.PhoneNumber)
+                        </div>
+                    </div>
+                    <div class="info-field">
+                        <div class="field-label">City</div>
+                        <div class="field-value @(string.IsNullOrWhiteSpace(Model.City) ? "empty" : "")">
+                            @(string.IsNullOrWhiteSpace(Model.City) ? "—" : Model.City)
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-3 pt-2">
+                    <a asp-controller="Profile" asp-action="Edit" class="btn-edit">✏️ Edit</a>
+                    <form asp-controller="Profile" asp-action="Delete" method="post" class="m-0">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn-delete"
+                                onclick="return confirm('Clear your saved profile?')">
+                            🗑️ Delete
+                        </button>
+                    </form>
+                    <a asp-controller="Home" asp-action="Index"
+                       class="text-muted text-decoration-none small ms-auto">
+                        🏠 Back to Home
+                    </a>
+                </div>
+            }
+            else
+            {
+                @* ── EDIT MODE ── *@
+                <form asp-controller="Profile" asp-action="Index" method="post" novalidate>
+                    @Html.AntiForgeryToken()
+
+                    <p class="section-label">Personal Details</p>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="FullName" class="form-label"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="e.g. Ishaan Bansal" />
+                            <span asp-validation-for="FullName" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="DateOfBirth" class="form-label"></label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control"
+                                   max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger small"></span>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label d-block">Gender</label>
+                            <div class="gender-group">
+                                <input type="radio" asp-for="Gender" value="Male" id="gMale" />
+                                <label for="gMale">♂ Male</label>
+                                <input type="radio" asp-for="Gender" value="Female" id="gFemale" />
+                                <label for="gFemale">♀ Female</label>
+                                <input type="radio" asp-for="Gender" value="Other" id="gOther" />
+                                <label for="gOther">⚧ Other</label>
+                                <input type="radio" asp-for="Gender" value="Prefer not to say" id="gNone" />
+                                <label for="gNone">🔒 Prefer not to say</label>
+                            </div>
+                            <span asp-validation-for="Gender" class="text-danger small d-block mt-1"></span>
+                        </div>
+                    </div>
+
+                    <p class="section-label mt-2">Contact Details</p>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="you@example.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" type="tel" class="form-control" placeholder="+91 98765 43210" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="City" class="form-label"></label>
+                            <input asp-for="City" class="form-control" placeholder="e.g. Mumbai" />
+                            <span asp-validation-for="City" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex align-items-center gap-3 pt-2">
+                        <button type="submit" class="btn btn-save">Save Profile</button>
+                        @if (Model.IsSaved)
+                        {
+                            <a asp-controller="Profile" asp-action="Index" class="text-muted text-decoration-none small">← Cancel</a>
+                           
+                        }
+                        else
+                        {
+                            <a asp-controller="Home" asp-action="Index" class="text-muted text-decoration-none small">← Back to Home</a>
+                        }
+                    </div>
+                </form>
+                
+            }
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        const toast = document.getElementById('successToast');
+        if (toast) setTimeout(() => toast.style.display = 'none', 4000);
+    </script>
+}

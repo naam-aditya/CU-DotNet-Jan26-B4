@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700">
+  <defs>
+    <linearGradient id="room" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#f6efe6"/>
+      <stop offset="1" stop-color="#e4d6c5"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="0" x2="0" y1="0" y2="1">
+      <stop offset="0" stop-color="#d8efff"/>
+      <stop offset="0.65" stop-color="#8ac7ee"/>
+      <stop offset="1" stop-color="#4f95cb"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="700" fill="url(#room)"/>
+  <polygon points="120,95 1080,95 980,170 220,170" fill="#decfbc"/>
+  <rect x="160" y="170" width="880" height="380" rx="28" fill="#faf8f5" stroke="#cfbfa9" stroke-width="8"/>
+  <rect x="455" y="145" width="290" height="190" rx="18" fill="url(#sea)" stroke="#b7d5e8" stroke-width="8"/>
+  <path d="M480 255c45-24 85 26 140 0s95 26 150 0v55H480z" fill="#6ea8d7" opacity="0.65"/>
+  <rect x="270" y="285" width="660" height="160" rx="22" fill="#ffffff"/>
+  <rect x="270" y="400" width="660" height="115" rx="18" fill="#1d67ae"/>
+  <rect x="130" y="210" width="90" height="270" rx="12" fill="#e7dccd"/>
+  <rect x="980" y="210" width="90" height="270" rx="12" fill="#e7dccd"/>
+  <rect x="0" y="575" width="1200" height="125" fill="#70655c"/>
+  <path d="M80 590h1040" stroke="#918171" stroke-width="8"/>
+</svg>

@@ -1,0 +1,336 @@
+﻿@using System.IdentityModel.Tokens.Jwt
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@functions {
+    public string GetNameFromToken(string token)
+    {
+        if (string.IsNullOrEmpty(token)) return null;
+
+        var handler = new JwtSecurityTokenHandler();
+        var jwt = handler.ReadJwtToken(token);
+
+        return jwt.Claims.FirstOrDefault(c =>
+            c.Type == "name" || c.Type == "unique_name"
+        )?.Value;
+    }
+}
+@functions {
+    public string GetInitials(string name)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+            return "U";
+
+        var parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 1)
+            return parts[0][0].ToString().ToUpper();
+
+        return (parts[0][0].ToString() + parts[1][0].ToString()).ToUpper();
+    }
+}
+@{
+    var token = HttpContextAccessor.HttpContext?.Session.GetString("JWT");
+    var username = GetNameFromToken(token);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Cruise Booking</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TicketBookingSystem.Mvc.styles.css" asp-append-version="true" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,800;1,500&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    /* ---- Brand (logo + name) ---- */
+    .brand-link { text-decoration: none; padding: 0; }
+    .brand-link:hover .brand-logo {
+        transform: scale(1.08) rotate(-3deg);
+        box-shadow: 0 6px 18px rgba(50, 176, 150, 0.40);
+    }
+
+    .brand-logo {
+        height: 60px;
+        width: 60px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 4px 14px rgba(50, 176, 150, 0.28);
+        transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .brand-stack { display: flex; flex-direction: column; line-height: 1; }
+
+    .brand-text {
+        font-family: 'Playfair Display', 'Segoe UI', serif;
+        font-weight: 800;
+        font-size: 1.6rem;
+        letter-spacing: -0.3px;
+        color: #0f172a;
+        line-height: 1.05;
+    }
+    .brand-text-accent {
+        color: #32B096;
+        font-style: italic;
+        font-weight: 600;
+    }
+
+    .brand-tagline {
+        font-family: 'Poppins', system-ui, sans-serif;
+        font-size: 0.65rem;
+        font-weight: 600;
+        letter-spacing: 3.5px;
+        color: #64748b;
+        text-transform: uppercase;
+        margin-top: 6px;
+    }
+
+    @@media (max-width: 575px) {
+        .brand-logo  { height: 50px; width: 50px; }
+        .brand-text  { font-size: 1.3rem; }
+        .brand-tagline { letter-spacing: 2px; }
+    }
+        /* ── User Avatar Button ── */
+        .user-avatar-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #32B096, #279078);
+            border: 2px solid rgba(50,176,150,.35);
+            color: #fff;
+            font-weight: 800;
+            font-size: .95rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all .2s ease;
+            outline: none;
+            box-shadow: 0 2px 8px rgba(50,176,150,.25);
+        }
+
+            .user-avatar-btn:hover,
+            .user-avatar-btn:focus {
+                transform: scale(1.08);
+                box-shadow: 0 4px 16px rgba(50,176,150,.4);
+                border-color: rgba(50,176,150,.6);
+            }
+
+        /* ── Dropdown panel ── */
+        .user-dropdown-menu {
+            min-width: 220px;
+            border-radius: 14px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 16px 40px rgba(10,37,64,.14) !important;
+            padding: .5rem .5rem !important;
+            margin-top: .5rem !important;
+            overflow: hidden;
+        }
+
+            /* Greeting row at top of dropdown */
+            .user-dropdown-menu .greeting {
+                padding: .6rem .85rem .5rem;
+                font-size: .8rem;
+                color: #64748b;
+                font-weight: 500;
+                border-bottom: 1px solid #f1f5f9;
+                margin-bottom: .25rem;
+            }
+
+            /* Each item */
+            .user-dropdown-menu .dropdown-item {
+                border-radius: 10px;
+                padding: .6rem .85rem;
+                font-size: .9rem;
+                font-weight: 500;
+                color: #0f172a;
+                display: flex;
+                align-items: center;
+                gap: .6rem;
+                transition: background .15s ease;
+            }
+
+                .user-dropdown-menu .dropdown-item:hover {
+                    background: #f0fdf9;
+                    color: #32B096;
+                }
+
+                .user-dropdown-menu .dropdown-item .item-icon {
+                    font-size: 1rem;
+                    width: 22px;
+                    text-align: center;
+                    opacity: .8;
+                }
+
+            /* Divider */
+            .user-dropdown-menu .dropdown-divider {
+                border-color: #f1f5f9;
+                margin: .25rem 0;
+            }
+
+</style>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom shadow-sm sticky-top py-3">
+            <div class="container-fluid px-4">
+                <a class="navbar-brand d-flex align-items-center gap-3 brand-link"
+                       asp-controller="Home" asp-action="Index">
+                    <img src="~/images/logo.jpg"
+                         alt="ChaloSamundar logo"
+                         class="brand-logo" />
+                    <span class="brand-stack">
+                        <span class="brand-text">
+                            Chalo<span class="brand-text-accent">Samundar</span>
+                        </span>
+                        <span class="brand-tagline">Sail · Smile · Repeat</span>
+                    </span>
+                </a>
+
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" id="destinationsDropdown" role="button" data-bs-toggle="dropdown">
+                                Destinations
+                            </a>
+                            <ul class="dropdown-menu shadow border-0 mt-2">
+                                <li><a class="dropdown-item py-2" asp-controller="Trips" asp-action="Index" asp-route-Destination="Goa">Goa</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Trips" asp-action="Index" asp-route-Destination="Lakshadweep">Lakshadweep</a></li>
+                                <li><a class="dropdown-item py-2" asp-controller="Trips" asp-action="Index" asp-route-Destination="Sri Lanka">Sri Lanka</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-page="/Feedback">Feedback</a>
+                        </li>
+
+                        <li class="nav-item d-none d-lg-block mx-2">
+                            <span class="text-muted">|</span>
+                        </li>
+
+                        @if (HttpContextAccessor?.HttpContext?.Session.GetString("JWT") == null) 
+                        {
+                            <li class="nav-item ms-lg-1 mt-2 mt-lg-0">
+                                <a class="nav-link fw-semibold" asp-controller="Auth" asp-action="Login">Log in</a>
+                            </li>
+                            <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                                <a class="btn px-4 rounded-pill fw-semibold" style="color: #32B096; border: 1px solid #32B096;" asp-controller="Auth" asp-action="Register">Sign up</a>
+                            </li>
+                        }
+                        else 
+                        {
+                            @* <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                                <a class="btn px-4 rounded-pill fw-semibold" style="color: #32B096; border: 1px solid #32B096;" asp-controller="Auth" asp-action="Logout">Log Out</a>
+                            </li> *@
+                            <li class="nav-item ms-3">
+                                <div class="dropdown">
+                                    <button class="user-avatar-btn"
+                                            type="button"
+                                            id="userAvatarDropdown"
+                                            data-bs-toggle="dropdown"
+                                            aria-expanded="false"
+                                            title="My Account">
+                                        @GetInitials(username)
+                                    </button>
+
+                                    <ul class="dropdown-menu dropdown-menu-end user-dropdown-menu"
+                                        aria-labelledby="userAvatarDropdown">
+
+                                        <li>
+                                            <div class="greeting">
+                                                👋 Hello, @(string.IsNullOrEmpty(username) ? "User" : username)
+                                            </div>
+                                        </li>
+                                        @{
+                                            var role = string.Empty;
+                                            if (!string.IsNullOrEmpty(token))
+                                            {
+                                                var h = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                                                var j = h.ReadJwtToken(token);
+                                                role = j.Claims.FirstOrDefault(c =>
+                                                c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
+                                                )?.Value ?? string.Empty;
+                                            }
+                                        }
+                                        @if (role == "Admin")
+{
+    <li>
+        <a class="dropdown-item"
+           asp-controller="Admin"
+           asp-action="Index">
+            <span class="item-icon">🛡️</span>
+            Admin Panel
+        </a>
+    </li>
+    <li><hr class="dropdown-divider"></li>
+}
+
+
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Profile"
+                                               asp-action="Index">
+                                                <span class="item-icon">👤</span>
+                                                My Profile
+                                            </a>
+                                        </li>
+
+                                        <li>
+                                            <a class="dropdown-item"
+                                               asp-controller="Profile"
+                                               asp-action="MyBookings">
+                                                <span class="item-icon">🎫</span>
+                                                My Bookings
+                                            </a>
+                                        </li>
+
+                                        <li><hr class="dropdown-divider"></li>
+
+                                        <li>
+                                            <a class="dropdown-item text-danger"
+                                               asp-controller="Auth"
+                                               asp-action="Logout">
+                                                <span class="item-icon">🚪</span>
+                                                Logout
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                        }
+
+                        <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                            <a class="btn px-4 rounded-pill shadow-sm text-white fw-semibold" style="background-color: #32B096;" asp-controller="Trips" asp-action="Index">Find A Cruise</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main role="main">
+        @RenderBody()
+    </main>
+
+    <footer class="bg-dark text-white-50 text-center py-4 mt-auto">
+        <div class="container small">
+            <p class="mb-1">&copy; 2026 Cruise Booking. All rights reserved.</p>
+            <a asp-controller="Home" asp-action="Privacy" class="text-white-50 text-decoration-none hover-white">Privacy Policy</a>
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

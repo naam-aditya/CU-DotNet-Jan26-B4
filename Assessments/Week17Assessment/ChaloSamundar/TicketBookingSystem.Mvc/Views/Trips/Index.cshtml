@@ -1,0 +1,317 @@
+﻿@model IReadOnlyList<TicketBookingSystem.Mvc.ViewModels.TripViewModel>
+@{
+    ViewData["Title"] = "Search Results";
+    var criteria = ViewData["Criteria"] as TicketBookingSystem.Mvc.ViewModels.TripSearchViewModel
+                   ?? new TicketBookingSystem.Mvc.ViewModels.TripSearchViewModel();
+
+    var summary = $"{(string.IsNullOrWhiteSpace(criteria.Destination) ? "All destinations" : criteria.Destination)}"
+                  + (criteria.TravelMonth.HasValue ? $", {criteria.TravelMonth:MMM yyyy}" : "")
+                  + (criteria.Nights.HasValue ? $", {criteria.Nights} nights" : "");
+
+    string RatingBadgeClass(decimal price) =>
+        price >= 30000 ? "rating-excellent" :
+        price >= 20000 ? "rating-very-good" : "rating-good";
+    string RatingLabel(decimal price) =>
+        price >= 30000 ? "Excellent" :
+        price >= 20000 ? "Very good" : "Good";
+    decimal RatingScore(decimal price) =>
+        price >= 30000 ? 9.6m : price >= 20000 ? 9.2m : 8.0m;
+}
+
+<style>
+    body { background: #f7f8fa; }
+
+    .tripster-wrap { padding: 1.5rem 0 3rem; }
+
+    .filter-card {
+        background: #fff; border: 1px solid #eceef2; border-radius: 14px;
+        padding: 1.5rem; position: sticky; top: 1rem;
+    }
+    .filter-card h6 { font-weight: 700; font-size: 1.1rem; margin-bottom: 1rem; }
+    .filter-card label { font-size: .85rem; font-weight: 600; color: #1a1a1a; margin-bottom: .35rem; }
+    .filter-card .form-control, .filter-card .form-select {
+        border-radius: 10px; border: 1px solid #e3e5ea; padding: .65rem .85rem;
+    }
+    .btn-search { background: #32B096; color: #fff; font-weight: 600;
+                  border-radius: 10px; padding: .75rem 1rem; width: 100%; border: none; }
+    .btn-search:hover { background: #279078; color: #fff; }
+    .btn-back { border: none; background: transparent; color: #1a1a1a;
+                padding: 0; margin-bottom: .75rem; text-decoration: none; }
+    .filter-section { border-top: 1px solid #eceef2; margin-top: 1.5rem; padding-top: 1.25rem; }
+    .filter-section h6 { font-size: 1rem; margin-bottom: .75rem; }
+    .filter-check { display: flex; align-items: center; gap: .6rem; padding: .3rem 0; font-size: .9rem; }
+
+    .results-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.25rem; }
+    .results-top small { color: #6b7280; font-size: .9rem; }
+    .results-top h1 { font-size: 1.6rem; font-weight: 700; margin: .15rem 0 0; color: #111827; }
+    .sort-btn { background: #fff; border: 1px solid #e3e5ea; border-radius: 10px;
+                padding: .55rem 1rem; font-size: .9rem; font-weight: 500; }
+
+    /* ---- TRIP CARD ---- */
+    .result-row {
+        background: #fff; border: 1px solid #eceef2; border-radius: 14px;
+        overflow: hidden; margin-bottom: 1rem;
+        display: grid; grid-template-columns: 260px 1fr 220px;
+        transition: box-shadow .2s, transform .2s;
+    }
+    .result-row:hover { box-shadow: 0 10px 24px rgba(17,24,39,.1); transform: translateY(-2px); }
+
+    .card-image {
+        position: relative;
+        background-size: cover; background-position: center;
+        min-height: 220px;
+    }
+    .card-image::after {
+        content: ""; position: absolute; inset: 0;
+        background: linear-gradient(180deg, rgba(10,37,64,0) 50%, rgba(10,37,64,.55) 100%);
+    }
+    .card-image .route-chip-stack {
+        position: absolute; left: .75rem; top: .75rem;
+        display: flex; flex-direction: column; gap: .35rem;
+        z-index: 2;
+    }
+    .card-image .route-chip {
+        display: inline-block;
+        background: rgba(255,255,255,.95); color: #32B096;
+        padding: .3rem .7rem; border-radius: 999px;
+        font-size: .8rem; font-weight: 700;
+        backdrop-filter: blur(4px);
+        box-shadow: 0 2px 6px rgba(0,0,0,.08);
+    }
+    .card-image .type-chip {
+        position: absolute; left: .75rem; bottom: .75rem;
+        background: #32B096; color: #fff;
+        padding: .3rem .7rem; border-radius: 999px;
+        font-size: .75rem; font-weight: 600; z-index: 2;
+        text-transform: uppercase; letter-spacing: .3px;
+    }
+
+    .result-info { padding: 1rem 1.25rem; }
+    .result-info h5 { font-weight: 700; font-size: 1.15rem; margin: 0 0 .35rem; color: #111827; }
+    .route-line {
+        display: flex; align-items: center; gap: .4rem;
+        color: #32B096; font-weight: 600; font-size: .95rem;
+        margin: .4rem 0 .6rem; flex-wrap: wrap;
+    }
+    .route-line .arrow { color: #9ca3af; font-weight: 400; }
+    .result-info .meta { color: #16a34a; font-size: .85rem; margin-bottom: .6rem; }
+    .result-info .features { color: #4b5563; font-size: .85rem; line-height: 1.6; }
+
+    .tag-pill {
+        display: inline-block; border: 1px solid #32B096; color: #32B096;
+        padding: .2rem .75rem; border-radius: 999px; font-size: .78rem;
+        margin-right: .35rem; margin-top: .5rem; font-weight: 500;
+    }
+
+    .result-side {
+        text-align: right; padding: 1rem 1.25rem;
+        display: flex; flex-direction: column; justify-content: space-between;
+        border-left: 1px solid #f3f4f6;
+    }
+    .rating-line { display: flex; align-items: center; justify-content: flex-end; gap: .5rem; }
+    .rating-label { font-weight: 600; font-size: .9rem; }
+    .rating-badge { display: inline-block; padding: .25rem .55rem; border-radius: 8px;
+                    font-weight: 700; font-size: .85rem; }
+    .rating-excellent { background: #d1fae5; color: #065f46; }
+    .rating-very-good { background: #d4f4ea; color: #279078; }
+    .rating-good { background: #e6f7f0; color: #279078; }
+    .rating-reviews { color: #6b7280; font-size: .78rem; }
+
+    .price-line { font-size: 1.6rem; font-weight: 800; color: #111827; }
+    .price-sub { color: #6b7280; font-size: .82rem; margin-bottom: .75rem; }
+
+    .btn-book {
+        display: inline-block;
+        background: #32B096; color: #fff; border: 2px solid #32B096;
+        border-radius: 10px; font-weight: 600; padding: .65rem 1rem; width: 100%;
+        text-align: center; text-decoration: none;
+        transition: background .2s, color .2s, transform .2s;
+    }
+    .btn-book:hover { background: #279078; border-color: #279078; color: #fff; transform: translateY(-1px); }
+
+    /* Secondary "outline" variant — same shape, hollow body */
+    .btn-book.btn-book-outline {
+        background: #fff; color: #32B096;
+    }
+    .btn-book.btn-book-outline:hover { background: #32B096; color: #fff; }
+
+    @@media (max-width: 991px) {
+        .result-row { grid-template-columns: 1fr; }
+        .card-image { min-height: 200px; }
+        .result-side { text-align: left; border-left: none; border-top: 1px solid #f3f4f6; }
+        .rating-line { justify-content: flex-start; }
+    }
+</style>
+
+<div class="tripster-wrap">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- SIDEBAR (unchanged) -->
+            <aside class="col-lg-3">
+                <form asp-controller="Trips" asp-action="Index" method="get" class="filter-card">
+                    <a asp-controller="Home" asp-action="Index" class="btn-back">← Back</a>
+                    <h6>Your search</h6>
+
+                    <div class="mb-3">
+                        <label for="DeparturePort">From</label>
+                        <input type="text" id="DeparturePort" name="DeparturePort"
+                               value="@criteria.DeparturePort" placeholder="📍 From" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Destination">To</label>
+                        <input type="text" id="Destination" name="Destination"
+                               value="@criteria.Destination" placeholder="📍 Where to?" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="TravelMonth">Travel month</label>
+                        <input type="month" id="TravelMonth" name="TravelMonth"
+                               value="@(criteria.TravelMonth?.ToString("yyyy-MM"))" class="form-control" />
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="Nights">Nights</label>
+                        <select id="Nights" name="Nights" class="form-select">
+                            <option value="">Any</option>
+                            @foreach (var n in new[] { 2, 3, 4, 5, 7 })
+                            {
+                                if (criteria.Nights == n) { <option value="@n" selected>@n Nights</option> }
+                                else                      { <option value="@n">@n Nights</option> }
+                            }
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn-search mt-2">Search</button>
+
+                    <div class="filter-section">
+                        <h6>Popular filters</h6>
+                        <label class="filter-check"><input type="checkbox" /> Budget cruise</label>
+                        <label class="filter-check"><input type="checkbox" /> All meals included</label>
+                        <label class="filter-check"><input type="checkbox" /> Free cancellation</label>
+                        <label class="filter-check"><input type="checkbox" /> Family friendly</label>
+                    </div>
+
+                    <div class="filter-section">
+                        <h6>Price per trip</h6>
+                        <input type="range" class="form-range" min="5000" max="100000" step="1000" />
+                        <div class="d-flex justify-content-between small text-muted mt-1">
+                            <span>₹5,000</span><span>₹1,00,000</span>
+                        </div>
+                    </div>
+                </form>
+            </aside>
+
+            <!-- RESULTS -->
+            <section class="col-lg-9">
+                <div class="results-top">
+                    <div>
+                        <small>@(Model?.Count ?? 0) search results for</small>
+                        <h1>@summary</h1>
+                    </div>
+                    <button type="button" class="sort-btn">Sort by ▾</button>
+                </div>
+
+                @if (Model is null || Model.Count == 0)
+                {
+                    <div class="result-row" style="grid-template-columns:1fr; text-align:center; padding:3rem;">
+                        <div>
+                            <h4 class="fw-bold mb-1">No cruises match your filters</h4>
+                            <p class="text-muted mb-3">Try a different destination, month or nights.</p>
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary">Back to search</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    foreach (var trip in Model)
+                    {
+                        var from = trip.Ports.Length > 0 ? trip.Ports[0] : "—";
+                        var to   = trip.Ports.Length > 1 ? trip.Ports[^1] : from;
+
+                        var tripTypeLabel = trip.TripType switch
+                        {
+                            "RoundWay" => "ROUND WAY",
+                            "OneWay"   => "ONE WAY",
+                            _          => trip.TripType ?? ""
+                        };
+
+                        var isRound = trip.TripType == "RoundWay";
+
+                        <article class="result-row">
+                            <div class="card-image" style="background-image:url('@trip.ImageUrl')">
+                                <div class="route-chip-stack">
+                                    @if (isRound && trip.Ports.Length >= 2)
+                                    {
+                                        var mid = trip.Ports[trip.Ports.Length / 2];
+                                        <span class="route-chip">@from → @mid</span>
+                                        <span class="route-chip">@mid → @from</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="route-chip">@from → @to</span>
+                                    }
+                                </div>
+                                <span class="type-chip">@tripTypeLabel</span>
+                            </div>
+
+                            <div class="result-info">
+                                <h5>@trip.Heading</h5>
+                                @if (!string.IsNullOrWhiteSpace(trip.ShipName))
+                                {
+                                    <div class="text-muted small mb-1">Ship: @trip.ShipName</div>
+                                }
+
+                                <div class="route-line">
+                                    @for (int i = 0; i < trip.Ports.Length; i++)
+                                    {
+                                        <span>@trip.Ports[i]</span>
+                                        if (i < trip.Ports.Length - 1)
+                                        {
+                                            <span class="arrow">→</span>
+                                        }
+                                    }
+                                </div>
+
+                                <div class="meta">Free cancellation · All meals included</div>
+
+                                <div class="features">
+                                    🛏 @trip.Nights nights / @(trip.Nights + 1) days<br />
+                                    🗓 @trip.StartDate.ToString("MMM d") – @trip.EndDate.ToString("MMM d, yyyy")<br />
+                                    ⚓ @trip.Ports.Length port@(trip.Ports.Length == 1 ? "" : "s") of call
+                                </div>
+
+                                <div>
+                                    <span class="tag-pill">#Hot deal</span>
+                                    <span class="tag-pill">#Popular</span>
+                                </div>
+                            </div>
+
+                            <div class="result-side">
+                                <div>
+                                    <div class="rating-line">
+                                        <span class="rating-label">@RatingLabel(trip.Price)</span>
+                                        <span class="rating-badge @RatingBadgeClass(trip.Price)">@RatingScore(trip.Price)</span>
+                                    </div>
+                                    <div class="rating-reviews">1,920 reviews</div>
+                                </div>
+
+                                <div>
+                                    <div class="price-line">₹@trip.Price.ToString("N0")</div>
+                                    <div class="price-sub mb-2">@trip.Nights nights</div>
+                                    <div class="d-grid gap-2">
+                                        <a asp-controller="Cabin" asp-action="Index" asp-route-cruiseId="@trip.Id" class="btn-book">Book Now</a>
+                                        <a asp-controller="Trips" asp-action="Details" asp-route-id="@trip.Id" class="btn-book btn-book-outline">View Itinerary</a>
+                                    </div>
+                                </div>
+
+                                @* If the page needs a different rating source, replace the Price-based helpers above. *@
+                            </div>
+                        </article>
+                    }
+                }
+            </section>
+        </div>
+    </div>
+</div>
